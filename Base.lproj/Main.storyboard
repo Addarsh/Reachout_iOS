@@ -33,14 +33,61 @@
         <!--Posts-->
         <scene sceneID="akS-A4-DRq">
             <objects>
-                <viewController id="pFe-5h-zYL" sceneMemberID="viewController">
+                <viewController id="pFe-5h-zYL" customClass="PostsVC" customModule="reachout_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Hec-rY-hBS">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="BSI-fF-SpG">
+                                <rect key="frame" x="0.0" y="47" width="390" height="714"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="sectionIndexBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PostTableViewCell" rowHeight="90" id="Hli-9N-Mnf" customClass="PostTableViewCell" customModule="reachout_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="90"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Hli-9N-Mnf" id="ju6-cg-SuF">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="90"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kmh-7e-sxT">
+                                                    <rect key="frame" x="30" y="21" width="330" height="48"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Kmh-7e-sxT" secondAttribute="bottom" constant="10" id="VIN-5u-BT9"/>
+                                                <constraint firstItem="Kmh-7e-sxT" firstAttribute="leading" secondItem="ju6-cg-SuF" secondAttribute="leadingMargin" constant="10" id="dB2-m7-4YQ"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Kmh-7e-sxT" secondAttribute="trailing" constant="10" id="ey1-QN-v7T"/>
+                                                <constraint firstItem="Kmh-7e-sxT" firstAttribute="top" secondItem="ju6-cg-SuF" secondAttribute="topMargin" constant="10" id="wVp-xZ-8oj"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="message" destination="Kmh-7e-sxT" id="Ljc-1Q-mC3"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="guY-Tb-4W8"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="guY-Tb-4W8" firstAttribute="bottom" secondItem="BSI-fF-SpG" secondAttribute="bottom" id="699-fI-qdK"/>
+                            <constraint firstItem="BSI-fF-SpG" firstAttribute="leading" secondItem="guY-Tb-4W8" secondAttribute="leading" id="Z9M-Ok-3ag"/>
+                            <constraint firstItem="BSI-fF-SpG" firstAttribute="top" secondItem="guY-Tb-4W8" secondAttribute="top" id="aTD-AJ-GXM"/>
+                            <constraint firstItem="guY-Tb-4W8" firstAttribute="trailing" secondItem="BSI-fF-SpG" secondAttribute="trailing" id="dGC-RU-Rov"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Posts" image="pencil" catalog="system" id="hFY-nb-B2X"/>
+                    <connections>
+                        <outlet property="tableView" destination="BSI-fF-SpG" id="6I8-er-cCM"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ioD-HG-2yQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -141,9 +188,6 @@
     <resources>
         <image name="bubble.right" catalog="system" width="128" height="110"/>
         <image name="pencil" catalog="system" width="128" height="113"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
