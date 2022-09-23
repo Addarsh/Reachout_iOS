@@ -98,7 +98,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="io0-TV-aWm">
-                                <rect key="frame" x="10" y="47" width="370" height="60"/>
+                                <rect key="frame" x="0.0" y="47" width="390" height="60"/>
                                 <color key="backgroundColor" systemColor="systemBlueColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="vKV-Sx-K4B"/>
@@ -107,24 +107,100 @@
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="C8V-dh-OI7">
+                                <rect key="frame" x="0.0" y="107" width="390" height="639"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="OtherMessageTableViewCell" rowHeight="90" id="R9A-of-xI1" customClass="OtherMessageTableViewCell" customModule="reachout_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="90"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="R9A-of-xI1" id="AqQ-Pj-VeC">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="90"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GxE-GS-NoC" customClass="PaddingLabel" customModule="reachout_ios" customModuleProvider="target">
+                                                    <rect key="frame" x="20" y="11" width="250" height="68"/>
+                                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="GxE-GS-NoC" firstAttribute="leading" secondItem="AqQ-Pj-VeC" secondAttribute="leadingMargin" id="QEu-WV-bOw"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="GxE-GS-NoC" secondAttribute="bottom" id="T1T-gf-RR0"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="GxE-GS-NoC" secondAttribute="trailing" constant="100" id="fY0-T6-Iqh"/>
+                                                <constraint firstItem="GxE-GS-NoC" firstAttribute="top" secondItem="AqQ-Pj-VeC" secondAttribute="topMargin" id="jay-F0-PDr"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="message" destination="GxE-GS-NoC" id="w8F-g5-l30"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="MyMessageTableViewCell" rowHeight="90" id="qVo-wi-VAH" customClass="MyMessageTableViewCell" customModule="reachout_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="140" width="390" height="90"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qVo-wi-VAH" id="eG5-5X-HQq">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="90"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ak3-QD-dud" customClass="PaddingLabel" customModule="reachout_ios" customModuleProvider="target">
+                                                    <rect key="frame" x="100" y="11" width="270" height="68"/>
+                                                    <color key="backgroundColor" systemColor="systemBlueColor"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.maskToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Ak3-QD-dud" firstAttribute="bottom" secondItem="eG5-5X-HQq" secondAttribute="bottomMargin" id="CIA-6j-mro"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Ak3-QD-dud" secondAttribute="trailing" id="G0I-Vb-e2w"/>
+                                                <constraint firstItem="Ak3-QD-dud" firstAttribute="leading" secondItem="eG5-5X-HQq" secondAttribute="leadingMargin" constant="80" id="PX2-uE-QeA"/>
+                                                <constraint firstItem="Ak3-QD-dud" firstAttribute="top" secondItem="eG5-5X-HQq" secondAttribute="topMargin" id="hPz-8j-0Oe"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="message" destination="Ak3-QD-dud" id="PGs-vr-tZP"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="F38-5U-owT"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="F38-5U-owT" firstAttribute="bottom" secondItem="DtP-jF-BWx" secondAttribute="bottom" constant="30" id="0IM-KM-yxk"/>
+                            <constraint firstItem="C8V-dh-OI7" firstAttribute="leading" secondItem="F38-5U-owT" secondAttribute="leading" id="13Q-tU-TeS"/>
                             <constraint firstItem="DtP-jF-BWx" firstAttribute="leading" secondItem="F38-5U-owT" secondAttribute="leading" constant="10" id="Cjj-Sb-kDk"/>
-                            <constraint firstItem="F38-5U-owT" firstAttribute="trailing" secondItem="io0-TV-aWm" secondAttribute="trailing" constant="10" id="FSy-TO-vCv"/>
+                            <constraint firstItem="F38-5U-owT" firstAttribute="trailing" secondItem="io0-TV-aWm" secondAttribute="trailing" id="FSy-TO-vCv"/>
+                            <constraint firstItem="DtP-jF-BWx" firstAttribute="top" secondItem="C8V-dh-OI7" secondAttribute="bottom" id="WO5-Ow-DIG"/>
                             <constraint firstItem="io0-TV-aWm" firstAttribute="top" secondItem="F38-5U-owT" secondAttribute="top" id="X42-2W-UhA"/>
+                            <constraint firstItem="C8V-dh-OI7" firstAttribute="top" secondItem="io0-TV-aWm" secondAttribute="bottom" id="cGp-TC-NC9"/>
                             <constraint firstAttribute="trailing" secondItem="Zed-Ms-NfS" secondAttribute="trailing" constant="10" id="dJ7-fU-ksE"/>
-                            <constraint firstItem="io0-TV-aWm" firstAttribute="leading" secondItem="F38-5U-owT" secondAttribute="leading" constant="10" id="eSb-fj-yUx"/>
+                            <constraint firstItem="io0-TV-aWm" firstAttribute="leading" secondItem="F38-5U-owT" secondAttribute="leading" id="eSb-fj-yUx"/>
                             <constraint firstItem="F38-5U-owT" firstAttribute="trailing" secondItem="DtP-jF-BWx" secondAttribute="trailing" constant="70" id="iES-F5-jEe"/>
                             <constraint firstItem="F38-5U-owT" firstAttribute="bottom" secondItem="Zed-Ms-NfS" secondAttribute="bottom" constant="30" id="ont-dr-xWb"/>
+                            <constraint firstItem="F38-5U-owT" firstAttribute="trailing" secondItem="C8V-dh-OI7" secondAttribute="trailing" id="qlC-3z-rIZ"/>
                             <constraint firstItem="Zed-Ms-NfS" firstAttribute="leading" secondItem="DtP-jF-BWx" secondAttribute="trailing" constant="10" id="rmO-xO-cwZ"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="chatView" destination="HYm-1E-gpK" id="BV4-Uc-AQl"/>
                         <outlet property="roomName" destination="io0-TV-aWm" id="42o-Og-HmV"/>
+                        <outlet property="tableView" destination="C8V-dh-OI7" id="1Eu-Xn-9yQ"/>
                         <outlet property="textField" destination="DtP-jF-BWx" id="XWd-0K-bgH"/>
                     </connections>
                 </viewController>
