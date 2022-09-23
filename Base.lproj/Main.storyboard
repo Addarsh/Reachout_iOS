@@ -73,6 +73,65 @@
             </objects>
             <point key="canvasLocation" x="1776.9230769230769" y="-67.535545023696685"/>
         </scene>
+        <!--Chat RoomVC-->
+        <scene sceneID="Jwk-bH-gTD">
+            <objects>
+                <viewController storyboardIdentifier="ChatRoomVC" id="89X-2r-KpW" customClass="ChatRoomVC" customModule="reachout_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="HYm-1E-gpK">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DtP-jF-BWx">
+                                <rect key="frame" x="10" y="746" width="310" height="34"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zed-Ms-NfS">
+                                <rect key="frame" x="330" y="753.66666666666663" width="50" height="26.333333333333371"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="paperplane.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="didSendMessage:" destination="89X-2r-KpW" eventType="touchUpInside" id="eTa-KF-JKY"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="io0-TV-aWm">
+                                <rect key="frame" x="10" y="47" width="370" height="60"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="vKV-Sx-K4B"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="F38-5U-owT"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="F38-5U-owT" firstAttribute="bottom" secondItem="DtP-jF-BWx" secondAttribute="bottom" constant="30" id="0IM-KM-yxk"/>
+                            <constraint firstItem="DtP-jF-BWx" firstAttribute="leading" secondItem="F38-5U-owT" secondAttribute="leading" constant="10" id="Cjj-Sb-kDk"/>
+                            <constraint firstItem="F38-5U-owT" firstAttribute="trailing" secondItem="io0-TV-aWm" secondAttribute="trailing" constant="10" id="FSy-TO-vCv"/>
+                            <constraint firstItem="io0-TV-aWm" firstAttribute="top" secondItem="F38-5U-owT" secondAttribute="top" id="X42-2W-UhA"/>
+                            <constraint firstAttribute="trailing" secondItem="Zed-Ms-NfS" secondAttribute="trailing" constant="10" id="dJ7-fU-ksE"/>
+                            <constraint firstItem="io0-TV-aWm" firstAttribute="leading" secondItem="F38-5U-owT" secondAttribute="leading" constant="10" id="eSb-fj-yUx"/>
+                            <constraint firstItem="F38-5U-owT" firstAttribute="trailing" secondItem="DtP-jF-BWx" secondAttribute="trailing" constant="70" id="iES-F5-jEe"/>
+                            <constraint firstItem="F38-5U-owT" firstAttribute="bottom" secondItem="Zed-Ms-NfS" secondAttribute="bottom" constant="30" id="ont-dr-xWb"/>
+                            <constraint firstItem="Zed-Ms-NfS" firstAttribute="leading" secondItem="DtP-jF-BWx" secondAttribute="trailing" constant="10" id="rmO-xO-cwZ"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="chatView" destination="HYm-1E-gpK" id="BV4-Uc-AQl"/>
+                        <outlet property="roomName" destination="io0-TV-aWm" id="42o-Og-HmV"/>
+                        <outlet property="textField" destination="DtP-jF-BWx" id="XWd-0K-bgH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ebG-6w-3Jt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2592" y="-68"/>
+        </scene>
         <!--Posts-->
         <scene sceneID="akS-A4-DRq">
             <objects>
@@ -138,7 +197,6 @@
         <!--TabsVC-->
         <scene sceneID="1UM-IS-pQw">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="pkz-2M-Ppr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <tabBarController storyboardIdentifier="TabsVC" id="Iuv-ey-oJh" customClass="TabsVC" customModule="reachout_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="oSm-b4-Gyy"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6xy-Jq-ltq">
@@ -151,6 +209,7 @@
                         <segue destination="7az-gS-QPZ" kind="relationship" relationship="viewControllers" id="YoI-BQ-RHN"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pkz-2M-Ppr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-60" y="-482"/>
         </scene>
@@ -229,6 +288,7 @@
     </scenes>
     <resources>
         <image name="bubble.right" catalog="system" width="128" height="110"/>
+        <image name="paperplane.fill" catalog="system" width="128" height="119"/>
         <image name="pencil" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
