@@ -132,6 +132,7 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </label>
                                             </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="GxE-GS-NoC" firstAttribute="leading" secondItem="AqQ-Pj-VeC" secondAttribute="leadingMargin" id="QEu-WV-bOw"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="GxE-GS-NoC" secondAttribute="bottom" id="T1T-gf-RR0"/>
@@ -165,6 +166,7 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </label>
                                             </subviews>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="Ak3-QD-dud" firstAttribute="bottom" secondItem="eG5-5X-HQq" secondAttribute="bottomMargin" id="CIA-6j-mro"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="Ak3-QD-dud" secondAttribute="trailing" id="G0I-Vb-e2w"/>

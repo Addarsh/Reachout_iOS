@@ -16,6 +16,8 @@ class ChatRoomVC: UIViewController {
     @IBOutlet weak var roomName: UILabel!
     
     var chatRoomName: String = ""
+    
+    var messagesInRoom: [ChatMessage] = [ChatMessage(text: "Monkey", sent_by_me: false), ChatMessage(text: "Donkey", sent_by_me: false), ChatMessage(text: "Goat", sent_by_me: true), ChatMessage(text: "Hippo", sent_by_me: false)]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,42 +60,51 @@ class ChatRoomVC: UIViewController {
     
     // Handler for when user posts a message.
     @IBAction func didSendMessage(_ sender: Any) {
+        guard let message = textField.text else {
+            return
+        }
         
+        // Add to messages in room.
+        messagesInRoom.append(ChatMessage(text: message,sent_by_me: true))
+        self.tableView.reloadData()
+        
+        // Clear text field.
+        self.textField.text = ""
     }
 
 
 }
 
+extension ChatRoomVC: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messagesInRoom.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let message = self.messagesInRoom[indexPath.row]
+        
+        if !message.sent_by_me {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "OtherMessageTableViewCell") as! OtherMessageTableViewCell
+            cell.setMessage(message: message.text)
+            return cell
+        }
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MyMessageTableViewCell") as! MyMessageTableViewCell
+        cell.setMessage(message: message.text)
+        return cell
+    }
+    
+}
+
 // Put this piece of code anywhere you like
-extension UIViewController {
+extension ChatRoomVC {
     func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ChatRoomVC.dismissKeyboard))
         tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+        self.tableView.addGestureRecognizer(tap)
     }
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
-}
-
-extension ChatRoomVC: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let even = indexPath.row % 2 == 0
-        
-        if even {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "OtherMessageTableViewCell") as! OtherMessageTableViewCell
-            cell.setMessage(message: "donkey")
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MyMessageTableViewCell") as! MyMessageTableViewCell
-            cell.setMessage(message: "monkey")
-            return cell
-        }
-    }
-    
 }
