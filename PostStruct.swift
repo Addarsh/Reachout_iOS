@@ -15,4 +15,5 @@ struct Post: Codable {
     let id: String
     let title: String
     let description: String
+    let username: String
 }

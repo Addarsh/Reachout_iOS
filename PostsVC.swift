@@ -79,7 +79,7 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostTableViewCell") as! PostTableViewCell
         
         let postTime = Utils.durationFromNow(date: Utils.getDate(isoDate: post.created_time))
-        cell.setMessage(title: post.title, message: post.description, postedBy: "addarsh", postTime: postTime)
+        cell.setMessage(title: post.title, message: post.description, postedBy: post.username, postTime: postTime)
         
         return cell
     }
