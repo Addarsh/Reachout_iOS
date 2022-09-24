@@ -27,11 +27,14 @@ class CreatePostVC: UIViewController {
         self.hideKeyboardWhenTappedAround()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        // Pass any data back to PostsVC if required.
+        // Created post data may not be needed because it will be retrieved
+        // by PostsVC from the server anyways.
+    }
+    
     @IBAction func didSubmit(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "PostsVC")
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+        self.dismiss(animated: true)
     }
 }
 

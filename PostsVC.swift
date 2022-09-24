@@ -12,7 +12,7 @@ class PostsVC: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     // Posts on the page.
-    var posts: [String] = ["First post", "Second post", "Third Post", "So creative", "a", "b", "c", "d", "e", "f", "g", "h","i", "j", "k"]
+    var posts: [Post] = [Post(title: "First Post", message: "hi there, want to chat?"), Post(title: "Second Post", message: "Want to connect."), Post(title: "Third Post", message: "contact me")]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +26,10 @@ class PostsVC: UIViewController {
 }
 
 extension PostsVC: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return posts.count
     }
@@ -36,7 +40,7 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostTableViewCell") as! PostTableViewCell
         
-        cell.setMessage(message: post)
+        cell.setMessage(title: post.title, message: post.message, postedBy: "addarsh", postTime: "2 mins ago")
         
         return cell
     }

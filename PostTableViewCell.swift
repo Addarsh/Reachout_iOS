@@ -9,10 +9,16 @@ import UIKit
 
 class PostTableViewCell: UITableViewCell {
     
+    @IBOutlet weak var title: UILabel!
     @IBOutlet weak var message: UILabel!
+    @IBOutlet weak var postedBy: UILabel!
+    @IBOutlet weak var postTime: UILabel!
     
-    public func setMessage(message: String) {
+    public func setMessage(title: String, message: String, postedBy: String, postTime: String) {
+        self.title.text = title
         self.message.text = message
+        self.postedBy.text = postedBy
+        self.postTime.text = postTime
     }
     
 }
