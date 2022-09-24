@@ -8,8 +8,11 @@
 import Foundation
 
 
-// Post structure.
-struct Post {
-    var title = ""
-    var message = ""
+// Post data.
+struct Post: Codable {
+    let created_time: String
+    let creator_user: String
+    let id: String
+    let title: String
+    let description: String
 }

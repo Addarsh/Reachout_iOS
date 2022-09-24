@@ -295,22 +295,40 @@
                                     <segue destination="WTu-cg-3ER" kind="show" id="fET-oI-png"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uxV-rI-2Y5">
+                                <rect key="frame" x="170" y="397" width="50" height="50"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="4Ie-yD-HlW">
+                                        <rect key="frame" x="15" y="15" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="86j-Go-OPB"/>
+                                    <constraint firstAttribute="height" constant="50" id="Uwi-GD-oAG"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="guY-Tb-4W8"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="cfW-5m-Bu4" firstAttribute="leading" secondItem="guY-Tb-4W8" secondAttribute="leading" constant="260" id="3Nx-5V-GKU"/>
                             <constraint firstItem="guY-Tb-4W8" firstAttribute="bottom" secondItem="BSI-fF-SpG" secondAttribute="bottom" id="699-fI-qdK"/>
+                            <constraint firstItem="uxV-rI-2Y5" firstAttribute="centerX" secondItem="Hec-rY-hBS" secondAttribute="centerX" id="XaK-Bg-Nuf"/>
                             <constraint firstItem="BSI-fF-SpG" firstAttribute="leading" secondItem="guY-Tb-4W8" secondAttribute="leading" id="Z9M-Ok-3ag"/>
                             <constraint firstItem="BSI-fF-SpG" firstAttribute="top" secondItem="guY-Tb-4W8" secondAttribute="top" constant="60" id="aTD-AJ-GXM"/>
                             <constraint firstItem="guY-Tb-4W8" firstAttribute="trailing" secondItem="BSI-fF-SpG" secondAttribute="trailing" id="dGC-RU-Rov"/>
                             <constraint firstItem="cfW-5m-Bu4" firstAttribute="top" secondItem="guY-Tb-4W8" secondAttribute="top" constant="5" id="eDO-vw-MVN"/>
                             <constraint firstItem="guY-Tb-4W8" firstAttribute="trailing" secondItem="cfW-5m-Bu4" secondAttribute="trailing" constant="10" id="kUN-Q2-U64"/>
                             <constraint firstItem="BSI-fF-SpG" firstAttribute="top" secondItem="cfW-5m-Bu4" secondAttribute="bottom" constant="20" id="sec-h7-CEe"/>
+                            <constraint firstItem="uxV-rI-2Y5" firstAttribute="centerY" secondItem="Hec-rY-hBS" secondAttribute="centerY" id="zcl-3n-m7s"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Posts" image="pencil" catalog="system" id="hFY-nb-B2X"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="4Ie-yD-HlW" id="pt0-Hk-uJU"/>
+                        <outlet property="loadingView" destination="uxV-rI-2Y5" id="gBk-VU-uaM"/>
                         <outlet property="tableView" destination="BSI-fF-SpG" id="6I8-er-cCM"/>
                     </connections>
                 </viewController>

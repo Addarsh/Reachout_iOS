@@ -11,8 +11,18 @@ class PostsVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var loadingView: UIView! {
+        didSet {
+            loadingView.layer.cornerRadius = 6
+        }
+    }
+    
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
     // Posts on the page.
-    var posts: [Post] = [Post(title: "First Post", message: "hi there, want to chat?"), Post(title: "Second Post", message: "Want to connect."), Post(title: "Third Post", message: "contact me")]
+    var posts: [Post] = []
+    
+    private let postsServiceQueue = DispatchQueue(label: "Posts service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +31,35 @@ class PostsVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
+        
+        // Start spinner.
+        showSpinner()
+        
+        // Load posts.
+        PostsService.listPosts(resultQueue: postsServiceQueue) { result in
+            switch result {
+            case .success(let gotPosts):
+                self.posts = gotPosts
+                DispatchQueue.main.async {
+                    self.hideSpinner()
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("list Posts failed with error: \(error.localizedDescription)")
+            }
+        }
     }
+    
+    private func showSpinner() {
+        activityIndicator.startAnimating()
+        loadingView.isHidden = false
+    }
+
+    private func hideSpinner() {
+        activityIndicator.stopAnimating()
+        loadingView.isHidden = true
+    }
+
 
 }
 
@@ -40,7 +78,8 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostTableViewCell") as! PostTableViewCell
         
-        cell.setMessage(title: post.title, message: post.message, postedBy: "addarsh", postTime: "2 mins ago")
+        let postTime = Utils.durationFromNow(date: Utils.getDate(isoDate: post.created_time))
+        cell.setMessage(title: post.title, message: post.description, postedBy: "addarsh", postTime: postTime)
         
         return cell
     }
