@@ -9,6 +9,23 @@ import Foundation
 
 class Utils {
     
+    // Base endpoint of server.
+    static let base_endpoint = "https://3265-71-202-19-95.ngrok.io/"
+    static let APPLICATION_JSON = "application/json"
+    static let CONTENT_TYPE = "Content-Type"
+    
+    // Whether a request is type GET or POST.
+    enum RequestType: String {
+        case GET
+        case POST
+    }
+    
+    // Network request error type.
+    enum NetworkRequestError: Error {
+        case unknown(Data?, URLResponse?)
+    }
+    
+    
     // Fetch date from ISO Date string.
     static func getDate(isoDate: String) -> Date {
         let dateFormatter = DateFormatter()

@@ -18,7 +18,7 @@ class InitialVC: UIViewController {
     @IBAction func login() {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "TabsVC")
+        let vc = storyboard.instantiateViewController(withIdentifier: "LoginVC")
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
