@@ -19,6 +19,9 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
         }
     }
     
+    let messageViewPlaceholder = "Describe your problem here so others can reach out and chat with you :)"
+    let messageTitlePlaceHolder = "Title of your message"
+    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     private let postsServiceQueue = DispatchQueue(label: "Posts service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
@@ -32,6 +35,10 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
         messageTitle.layer.borderWidth = 1
         messageTitle.layer.cornerRadius = 5
         messageTitle.layer.borderColor = UIColor.black.cgColor
+        messageTitle.attributedPlaceholder = NSAttributedString(
+            string: messageTitlePlaceHolder,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray]
+        )
         messageTitle.delegate = self
         
         
@@ -39,6 +46,9 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
         messageView.layer.borderWidth = 1
         messageView.layer.cornerRadius = 5
         messageView.layer.borderColor = UIColor.black.cgColor
+        messageView.text = messageViewPlaceholder
+        messageView.textColor = UIColor.lightGray
+        messageView.delegate = self
         
         submitButton.layer.cornerRadius = 10
 
@@ -113,5 +123,22 @@ extension CreatePostVC {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+}
+
+extension CreatePostVC: UITextViewDelegate {
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = messageViewPlaceholder
+            textView.textColor = UIColor.lightGray
+        }
     }
 }
