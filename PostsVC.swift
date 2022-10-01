@@ -22,6 +22,8 @@ class PostsVC: UIViewController {
     // Posts on the page.
     var posts: [Post] = []
     
+    private let headerHeight: CGFloat = 150
+    
     private let postsServiceQueue = DispatchQueue(label: "Posts service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
     override func viewDidLoad() {
@@ -35,8 +37,15 @@ class PostsVC: UIViewController {
         // Start spinner.
         showSpinner()
         
+        // Fetch token.
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        
         // Load posts.
-        PostsService.listPosts(resultQueue: postsServiceQueue) { result in
+        PostsService.listPosts(token: token, resultQueue: postsServiceQueue) { result in
             switch result {
             case .success(let gotPosts):
                 self.posts = gotPosts
@@ -50,17 +59,33 @@ class PostsVC: UIViewController {
         }
     }
     
+    // Show loading spinner.
     private func showSpinner() {
         activityIndicator.startAnimating()
         loadingView.isHidden = false
     }
 
+    // Hide loading spinner.
     private func hideSpinner() {
         activityIndicator.stopAnimating()
         loadingView.isHidden = true
     }
-
-
+    
+    
+    @IBAction func goToAccount(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "UserAccountVC")
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
+    
+    @IBAction func createPost(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "CreatePostVC")
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
+    
 }
 
 extension PostsVC: UITableViewDataSource, UITableViewDelegate {
@@ -82,5 +107,11 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
         cell.setMessage(title: post.title, message: post.description, postedBy: post.username, postTime: postTime)
         
         return cell
+    }
+}
+
+extension PostsVC: UINavigationBarDelegate {
+    func position(for bar: UIBarPositioning) -> UIBarPosition {
+        return .topAttached
     }
 }

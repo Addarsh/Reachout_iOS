@@ -10,15 +10,15 @@ import Foundation
 class PostsService {
     
     // Fetcha all the posts made by users.
-    static func listPosts(resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[Post], Error>) -> Void) {
+    static func listPosts(token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[Post], Error>) -> Void) {
         let url = URL(string: Utils.base_endpoint + "post/")!
         var request = URLRequest(url: url)
         
-        // Configure request Auth if any.
-        /*request.setValue(
-            "authToken",
+        // Set token in header.
+        request.setValue(
+            "Token " + token,
             forHTTPHeaderField: "Authorization"
-        )*/
+        )
         
         // Change the URLRequest to a POST request
         request.httpMethod = Utils.RequestType.GET.rawValue

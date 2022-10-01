@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CreatePostVC: UIViewController {
+class CreatePostVC: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var messageView: UITextView!
     
@@ -17,12 +17,14 @@ class CreatePostVC: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        messageTitle.layer.borderWidth = 1
+        messageTitle.layer.borderColor = UIColor.black.cgColor
+        messageTitle.delegate = self
+        
+        
         messageView.backgroundColor = UIColor.white
         messageView.layer.borderWidth = 1
         messageView.layer.borderColor = UIColor.black.cgColor
-        
-        messageTitle.layer.borderWidth = 1
-        messageTitle.layer.borderColor = UIColor.black.cgColor
 
         self.hideKeyboardWhenTappedAround()
     }
@@ -31,6 +33,10 @@ class CreatePostVC: UIViewController {
         // Pass any data back to PostsVC if required.
         // Created post data may not be needed because it will be retrieved
         // by PostsVC from the server anyways.
+    }
+    
+    @IBAction func back(_ sender: Any) {
+        self.dismiss(animated: true)
     }
     
     @IBAction func didSubmit(_ sender: Any) {
@@ -48,5 +54,11 @@ extension CreatePostVC {
     
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    // Hide keyboard when Enter key is pressed.
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
