@@ -9,18 +9,28 @@ import Foundation
 
 class PostsService {
     
+    struct CreatePostRequest: Codable {
+        let title: String
+        let description: String
+    }
+    
+    struct CreatePostResponse: Codable {
+        let title: String
+        let description: String
+    }
+    
+    static let url = URLRequest(url: URL(string: Utils.base_endpoint + "post/")!)
+    
     // Fetcha all the posts made by users.
     static func listPosts(token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[Post], Error>) -> Void) {
-        let url = URL(string: Utils.base_endpoint + "post/")!
-        var request = URLRequest(url: url)
+        var request =  url
         
         // Set token in header.
         request.setValue(
-            "Token " + token,
-            forHTTPHeaderField: "Authorization"
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
         )
         
-        // Change the URLRequest to a POST request
         request.httpMethod = Utils.RequestType.GET.rawValue
         
         // Create the HTTP request
@@ -45,6 +55,59 @@ class PostsService {
             
             resultQueue.async {
                 completionHandler(.success(posts))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    // Create a Post.
+    static func createPost(title: String, description: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<CreatePostResponse, Error>) -> Void) {
+        var request = url
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        request.httpMethod = Utils.RequestType.POST.rawValue
+        request.setValue(Utils.APPLICATION_JSON, forHTTPHeaderField: Utils.CONTENT_TYPE)
+        
+        // Attach POST body.
+        var postBody: Data
+        do {
+            postBody = try JSONEncoder().encode(CreatePostRequest(title: title, description: description))
+        } catch {
+            resultQueue.async {
+                completionHandler(.failure(error))
+            }
+            return
+        }
+        request.httpBody = postBody
+        
+        
+        // Create the HTTP request
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let responseData = data, error == nil else {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            var createPostResponse: CreatePostResponse
+            do {
+                createPostResponse = try JSONDecoder().decode(CreatePostResponse.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(createPostResponse))
             }
         }
         

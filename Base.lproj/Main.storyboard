@@ -539,12 +539,28 @@
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YYe-s0-Er0">
+                                <rect key="frame" x="170" y="397" width="50" height="50"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="ep8-NG-sF6">
+                                        <rect key="frame" x="15" y="15" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="h83-pk-z4f"/>
+                                    <constraint firstAttribute="width" constant="50" id="mUI-Fk-6Yc"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="53C-c1-PBW"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="34e-VZ-Oi4" firstAttribute="top" secondItem="Mcx-Wx-8rE" secondAttribute="bottom" constant="30" id="3p2-uW-iDJ"/>
                             <constraint firstItem="ERb-er-2gM" firstAttribute="top" secondItem="34e-VZ-Oi4" secondAttribute="bottom" constant="30" id="AcY-k5-Mvk"/>
+                            <constraint firstItem="YYe-s0-Er0" firstAttribute="centerX" secondItem="BKe-W0-Ajf" secondAttribute="centerX" id="Fw5-0d-HzT"/>
+                            <constraint firstItem="YYe-s0-Er0" firstAttribute="centerY" secondItem="BKe-W0-Ajf" secondAttribute="centerY" id="H3V-YB-338"/>
                             <constraint firstItem="Mcx-Wx-8rE" firstAttribute="top" secondItem="BKe-W0-Ajf" secondAttribute="top" id="Lbn-ol-Rnf"/>
                             <constraint firstItem="hkq-E4-wXa" firstAttribute="centerX" secondItem="BKe-W0-Ajf" secondAttribute="centerX" id="LzG-Gc-lKg"/>
                             <constraint firstItem="53C-c1-PBW" firstAttribute="trailing" secondItem="Mcx-Wx-8rE" secondAttribute="trailing" id="OOd-zc-pMo"/>
@@ -558,8 +574,11 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="ep8-NG-sF6" id="N4F-kk-jWh"/>
+                        <outlet property="loadingView" destination="YYe-s0-Er0" id="aRV-Ov-Wxm"/>
                         <outlet property="messageTitle" destination="34e-VZ-Oi4" id="pg3-pH-dqn"/>
                         <outlet property="messageView" destination="ERb-er-2gM" id="7VO-mA-BfL"/>
+                        <outlet property="submitButton" destination="hkq-E4-wXa" id="1tO-Yz-cPW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xu7-Nm-MIa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

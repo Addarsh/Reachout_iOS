@@ -13,6 +13,8 @@ class Utils {
     static let base_endpoint = "https://3265-71-202-19-95.ngrok.io/"
     static let APPLICATION_JSON = "application/json"
     static let CONTENT_TYPE = "Content-Type"
+    static let AUTHORIZATION = "Authorization"
+    static let TOKEN = "Token"
     
     // Whether a request is type GET or POST.
     enum RequestType: String {
@@ -33,6 +35,11 @@ class Utils {
         // Based on Django format: 2022-09-24T11:14:10.420751-07:00
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
         return dateFormatter.date(from: isoDate)!
+    }
+    
+    // Returns token value to set for Authorization field in Header of HTTP request.
+    static func getTokenHeaderValue(token: String) -> String {
+        return TOKEN + " " + token
     }
     
     // Returns how long from now the current post was posted.
