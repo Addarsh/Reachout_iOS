@@ -21,6 +21,10 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    private let postsServiceQueue = DispatchQueue(label: "Posts service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+    
+    public var postsDelegate: PostsDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,12 +43,6 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
         submitButton.layer.cornerRadius = 10
 
         self.hideKeyboardWhenTappedAround()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        // Pass any data back to PostsVC if required.
-        // Created post data may not be needed because it will be retrieved
-        // by PostsVC from the server anyways.
     }
     
     @IBAction func back(_ sender: Any) {
@@ -70,21 +68,20 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
         showSpinner()
         
         // Submit post.
-        PostsService.createPost(title: title, description: description, token: token) { result in
+        PostsService.createPost(title: title, description: description, token: token, resultQueue: postsServiceQueue) { result in
             switch result {
             case .success(_):
                 DispatchQueue.main.async {
                     self.hideSpinner()
-                    self.dismiss(animated: true)
+                    self.dismiss(animated: true) {
+                        self.postsDelegate?.reloadPosts()
+                    }
                 }
             case .failure(let error):
+                // TODO: Show error toast here.
                 print("Create Post failed with error: \(error.localizedDescription)")
             }
         }
-    }
-    
-    private func validateInputs() {
-        
     }
     
     // Show loading spinner.

@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol PostsDelegate {
+    func reloadPosts()
+}
+
 class PostsVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
@@ -37,6 +41,11 @@ class PostsVC: UIViewController {
         // Start spinner.
         showSpinner()
         
+        fetchLatestPosts()
+    }
+    
+    // Fetch latest posts from server.
+    private func fetchLatestPosts() {
         // Fetch token.
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
             print("Could not read token from keychain")
@@ -81,7 +90,8 @@ class PostsVC: UIViewController {
     
     @IBAction func createPost(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "CreatePostVC")
+        let vc = storyboard.instantiateViewController(withIdentifier: "CreatePostVC") as! CreatePostVC
+        vc.postsDelegate = self
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
@@ -113,5 +123,11 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
 extension PostsVC: UINavigationBarDelegate {
     func position(for bar: UIBarPositioning) -> UIBarPosition {
         return .topAttached
+    }
+}
+
+extension PostsVC: PostsDelegate {
+    func reloadPosts() {
+        fetchLatestPosts()
     }
 }
