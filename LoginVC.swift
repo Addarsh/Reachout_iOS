@@ -69,10 +69,12 @@ class LoginVC: UIViewController, UITextFieldDelegate  {
             case .success(let response):
                 let token = response.token
                 let userId = response.user_id
+                let email = response.email
                 
-                // Save token and userId to keychain.
+                // Save token, userId and email to keychain.
                 KeychainHelper.save(sensitiveData: token, service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT)
                 KeychainHelper.save(sensitiveData: userId, service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT)
+                KeychainHelper.save(sensitiveData: email, service: KeychainHelper.EMAIL, account: KeychainHelper.REACHOUT)
                 
                 DispatchQueue.main.async {
                     // Go to Posts screen.

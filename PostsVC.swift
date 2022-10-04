@@ -127,8 +127,7 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
         
         let postTime = Utils.durationFromNow(date: Utils.getDate(isoDate: post.created_time))
         
-        print("index: \(indexPath.row), creator: \(post.creator_user), actual user: \(userId)")
-        cell.setMessage(title: post.title, message: post.description, postedBy: post.username, postTime: postTime, hideDeleteButton: userId != post.creator_user, rowIndex: indexPath.row, postTableActionDelegate: self)
+        cell.setMessage(title: post.title, message: post.description, postedBy: post.username, postTime: postTime, hideDeleteButton: userId != post.creator_user, hideChatButton: userId == post.creator_user, rowIndex: indexPath.row, postTableActionDelegate: self)
         
         return cell
     }
@@ -147,6 +146,10 @@ extension PostsVC: PostsDelegate {
 }
 
 extension PostsVC: PostTableActionDelegate {
+    func didStartChat(rowIndex: Int) {
+        print("chat with index: \(rowIndex)")
+    }
+    
     func didDeletePost(rowIndex: Int) {
         // Delete Post.
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {

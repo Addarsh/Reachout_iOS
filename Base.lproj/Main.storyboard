@@ -269,23 +269,12 @@
                                                     <color key="textColor" systemColor="systemBlueColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d0f-7u-5EQ">
-                                                    <rect key="frame" x="350" y="9.9999999999999982" width="20" height="23.333333333333329"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                    <state key="normal">
-                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <imageReference key="image" image="trash" catalog="system" symbolScale="medium"/>
-                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="18" scale="medium"/>
-                                                    </state>
-                                                    <connections>
-                                                        <action selector="deletePost:" destination="Hli-9N-Mnf" eventType="touchUpInside" id="qXU-pT-vcs"/>
-                                                    </connections>
-                                                </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pGl-eN-FpU">
-                                                    <rect key="frame" x="30.000000000000004" y="44" width="41.333333333333343" height="20.333333333333329"/>
+                                                    <rect key="frame" x="30" y="44" width="250" height="20.333333333333329"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="250" id="c5p-Ia-gEi"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -304,6 +293,20 @@
                                                     <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d0f-7u-5EQ">
+                                                    <rect key="frame" x="147.33333333333334" y="60" width="14" height="22"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal">
+                                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <imageReference key="image" image="trash" catalog="system" symbolScale="small"/>
+                                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="15" scale="medium"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="deletePost:" destination="Hli-9N-Mnf" eventType="touchUpInside" id="qXU-pT-vcs"/>
+                                                    </connections>
+                                                </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I9z-w1-czm">
                                                     <rect key="frame" x="344.66666666666669" y="63" width="35.333333333333314" height="17"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -311,28 +314,41 @@
                                                     <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="de9-xc-1NF">
+                                                    <rect key="frame" x="347" y="10" width="23" height="22"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                    <state key="normal" image="bubble.right" catalog="system"/>
+                                                    <connections>
+                                                        <action selector="startChat:" destination="Hli-9N-Mnf" eventType="touchUpInside" id="f3i-8x-aSJ"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstItem="gEe-XG-8Pp" firstAttribute="leading" secondItem="ju6-cg-SuF" secondAttribute="leadingMargin" constant="10" id="6NQ-Ho-Hpx"/>
                                                 <constraint firstAttribute="bottom" secondItem="I9z-w1-czm" secondAttribute="bottom" constant="20" id="Edz-wD-9cd"/>
-                                                <constraint firstAttribute="trailing" secondItem="d0f-7u-5EQ" secondAttribute="trailing" constant="20" id="Fa9-mc-Hnr"/>
                                                 <constraint firstItem="TDu-be-fhK" firstAttribute="leading" secondItem="ju6-cg-SuF" secondAttribute="leadingMargin" constant="10" id="Hdo-as-NNt"/>
-                                                <constraint firstItem="d0f-7u-5EQ" firstAttribute="top" secondItem="ju6-cg-SuF" secondAttribute="top" constant="10" id="I1T-tX-NhK"/>
+                                                <constraint firstItem="d0f-7u-5EQ" firstAttribute="leading" secondItem="lEy-NE-zKy" secondAttribute="trailing" constant="10" id="KVG-qL-dlY"/>
                                                 <constraint firstItem="TDu-be-fhK" firstAttribute="top" secondItem="ju6-cg-SuF" secondAttribute="top" constant="10" id="NgN-Il-Xe0"/>
                                                 <constraint firstAttribute="bottom" secondItem="lEy-NE-zKy" secondAttribute="bottom" constant="20" id="Ogr-5k-tog"/>
                                                 <constraint firstAttribute="trailing" secondItem="I9z-w1-czm" secondAttribute="trailing" constant="10" id="SCp-ga-Veu"/>
                                                 <constraint firstAttribute="bottom" secondItem="gEe-XG-8Pp" secondAttribute="bottom" constant="20" id="UzK-vr-3QN"/>
                                                 <constraint firstItem="I9z-w1-czm" firstAttribute="top" secondItem="pGl-eN-FpU" secondAttribute="bottom" constant="10" id="WZm-RJ-vi7"/>
+                                                <constraint firstAttribute="bottom" secondItem="d0f-7u-5EQ" secondAttribute="bottom" constant="18" id="aix-WH-soc"/>
                                                 <constraint firstItem="pGl-eN-FpU" firstAttribute="top" secondItem="TDu-be-fhK" secondAttribute="bottom" constant="10" id="gSP-g3-zEm"/>
+                                                <constraint firstItem="de9-xc-1NF" firstAttribute="top" secondItem="ju6-cg-SuF" secondAttribute="top" constant="10" id="lju-Wh-9Cr"/>
                                                 <constraint firstItem="gEe-XG-8Pp" firstAttribute="top" secondItem="pGl-eN-FpU" secondAttribute="bottom" constant="10" id="pc0-C2-bdA"/>
                                                 <constraint firstItem="lEy-NE-zKy" firstAttribute="leading" secondItem="gEe-XG-8Pp" secondAttribute="trailing" constant="2" id="teV-pu-uem"/>
+                                                <constraint firstAttribute="trailing" secondItem="de9-xc-1NF" secondAttribute="trailing" constant="20" id="up8-B4-lXy"/>
                                                 <constraint firstItem="pGl-eN-FpU" firstAttribute="leading" secondItem="ju6-cg-SuF" secondAttribute="leadingMargin" constant="10" id="z0I-qm-uvB"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
+                                            <outlet property="chatButton" destination="de9-xc-1NF" id="edv-8G-m4M"/>
                                             <outlet property="deleteButton" destination="d0f-7u-5EQ" id="ZFO-XG-v0W"/>
                                             <outlet property="message" destination="pGl-eN-FpU" id="1Pv-U6-Pf8"/>
                                             <outlet property="postTime" destination="I9z-w1-czm" id="1zM-zv-kha"/>
@@ -429,8 +445,11 @@
                                                 <action selector="back:" destination="pRB-tl-dBl" eventType="touchUpInside" id="QbP-KH-Vif"/>
                                             </connections>
                                         </button>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S7y-9V-2W3">
-                                            <rect key="frame" x="144.33333333333334" y="66.333333333333329" width="101.33333333333334" height="33.666666666666671"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S7y-9V-2W3">
+                                            <rect key="frame" x="55" y="66.333333333333329" width="280" height="33.666666666666671"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="280" id="bcx-9O-DkX"/>
+                                            </constraints>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
@@ -485,6 +504,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="5G2-2k-8oC"/>
                     <connections>
+                        <outlet property="emailTitle" destination="S7y-9V-2W3" id="QU1-Tb-FRs"/>
                         <outlet property="tableView" destination="KSc-mt-e6C" id="QVG-ym-5sn"/>
                     </connections>
                 </viewController>

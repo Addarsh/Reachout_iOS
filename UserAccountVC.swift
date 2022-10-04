@@ -14,6 +14,7 @@ class UserAccountVC: UIViewController {
     }
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var emailTitle: UILabel!
     
     let options: [ActionType] = [.Logout]
     
@@ -24,6 +25,17 @@ class UserAccountVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
+        
+        // Fetch email.
+        guard let email = KeychainHelper.read(service: KeychainHelper.EMAIL, account: KeychainHelper.REACHOUT) else {
+            print("Could not read email from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.emailTitle.text = email
+        }
     }
     
     @IBAction func back(_ sender: Any) {
@@ -62,9 +74,10 @@ extension UserAccountVC: UITableViewDataSource, UITableViewDelegate {
     
     // Logs a user out.
     private func logout() {
-        // Delete token and userId and go to login screen.
+        // Delete token, userId and email and go to login screen.
         KeychainHelper.delete(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT)
         KeychainHelper.delete(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT)
+        KeychainHelper.delete(service: KeychainHelper.EMAIL, account: KeychainHelper.REACHOUT)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "LoginVC") as! LoginVC
