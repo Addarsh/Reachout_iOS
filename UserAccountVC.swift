@@ -62,8 +62,9 @@ extension UserAccountVC: UITableViewDataSource, UITableViewDelegate {
     
     // Logs a user out.
     private func logout() {
-        // Delete token and go to login screen.
+        // Delete token and userId and go to login screen.
         KeychainHelper.delete(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT)
+        KeychainHelper.delete(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "LoginVC") as! LoginVC

@@ -20,6 +20,7 @@ class Utils {
     enum RequestType: String {
         case GET
         case POST
+        case DELETE
     }
     
     // Network request error type.

@@ -12,7 +12,6 @@ protocol PostsDelegate {
 }
 
 class PostsVC: UIViewController {
-
     @IBOutlet weak var tableView: UITableView!
     
     @IBOutlet weak var loadingView: UIView! {
@@ -22,6 +21,8 @@ class PostsVC: UIViewController {
     }
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    private var userId: String = ""
     
     // Posts on the page.
     var posts: [Post] = []
@@ -42,6 +43,14 @@ class PostsVC: UIViewController {
         showSpinner()
         
         fetchLatestPosts()
+        
+        // Fetch user_id.
+        guard let userId = KeychainHelper.read(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT) else {
+            print("Could not read user_id from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        self.userId = userId
     }
     
     // Fetch latest posts from server.
@@ -55,11 +64,14 @@ class PostsVC: UIViewController {
         
         // Load posts.
         PostsService.listPosts(token: token, resultQueue: postsServiceQueue) { result in
+            DispatchQueue.main.async {
+                self.hideSpinner()
+            }
+            
             switch result {
             case .success(let gotPosts):
                 self.posts = gotPosts
                 DispatchQueue.main.async {
-                    self.hideSpinner()
                     self.tableView.reloadData()
                 }
             case .failure(let error):
@@ -114,7 +126,9 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostTableViewCell") as! PostTableViewCell
         
         let postTime = Utils.durationFromNow(date: Utils.getDate(isoDate: post.created_time))
-        cell.setMessage(title: post.title, message: post.description, postedBy: post.username, postTime: postTime)
+        
+        print("index: \(indexPath.row), creator: \(post.creator_user), actual user: \(userId)")
+        cell.setMessage(title: post.title, message: post.description, postedBy: post.username, postTime: postTime, hideDeleteButton: userId != post.creator_user, rowIndex: indexPath.row, postTableActionDelegate: self)
         
         return cell
     }
@@ -129,5 +143,33 @@ extension PostsVC: UINavigationBarDelegate {
 extension PostsVC: PostsDelegate {
     func reloadPosts() {
         fetchLatestPosts()
+    }
+}
+
+extension PostsVC: PostTableActionDelegate {
+    func didDeletePost(rowIndex: Int) {
+        // Delete Post.
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        
+        let postId = self.posts[rowIndex].id
+        
+        showSpinner()
+        
+        // Delete post.
+        PostsService.deletePost(id: postId, token: token, resultQueue: postsServiceQueue) { result in
+            DispatchQueue.main.async {
+                self.hideSpinner()
+            }
+            switch result {
+            case .success(_):
+                self.reloadPosts()
+            case .failure(let error):
+                print("list Posts failed with error: \(error.localizedDescription)")
+            }
+        }
     }
 }

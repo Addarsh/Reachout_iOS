@@ -11,6 +11,7 @@ class KeychainHelper {
     
     // Services.
     static let TOKEN: String = "token"
+    static let USER_ID: String = "user_id"
     
     // Accounts.
     static let REACHOUT: String = "reachout"
