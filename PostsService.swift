@@ -9,6 +9,16 @@ import Foundation
 
 class PostsService {
     
+    // Post data.
+    struct Post: Codable {
+        let created_time: String
+        let creator_user: String
+        let id: String
+        let title: String
+        let description: String
+        let username: String
+    }
+    
     struct CreatePostRequest: Codable {
         let title: String
         let description: String

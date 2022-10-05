@@ -72,7 +72,10 @@ class ChatRoomVC: UIViewController {
         self.textField.text = ""
     }
 
-
+    @IBAction func back(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
+    
 }
 
 extension ChatRoomVC: UITableViewDataSource, UITableViewDelegate {

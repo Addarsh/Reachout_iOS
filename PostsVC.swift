@@ -25,7 +25,7 @@ class PostsVC: UIViewController {
     private var userId: String = ""
     
     // Posts on the page.
-    var posts: [Post] = []
+    var posts: [PostsService.Post] = []
     
     private let headerHeight: CGFloat = 150
     
@@ -146,8 +146,13 @@ extension PostsVC: PostsDelegate {
 }
 
 extension PostsVC: PostTableActionDelegate {
+    
     func didStartChat(rowIndex: Int) {
-        print("chat with index: \(rowIndex)")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "StartChatVC") as! StartChatVC
+        vc.postOfCreator = posts[rowIndex]
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
     }
     
     func didDeletePost(rowIndex: Int) {

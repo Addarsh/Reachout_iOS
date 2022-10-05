@@ -107,7 +107,6 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
     }
 }
 
-// Put this piece of code anywhere you like
 extension CreatePostVC {
     func hideKeyboardWhenTappedAround() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(CreatePostVC.dismissKeyboard))
