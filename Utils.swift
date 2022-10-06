@@ -28,6 +28,12 @@ class Utils {
         case unknown(Data?, URLResponse?)
     }
     
+    // Denoted state of user in chat room.
+    enum ChatUserState: String {
+        case INVITED
+        case JOINED
+        case REJECTED
+    }
     
     // Fetch date from ISO Date string.
     static func getDate(isoDate: String) -> Date {

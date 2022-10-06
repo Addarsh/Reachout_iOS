@@ -19,13 +19,11 @@ class ChatsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    // Chat Room names on the page.
-    //var chatRooms: [String] = ["abc, def", "hello, everyone", "xyz, share", "asdaisjdasldalsjdlajdlajdljadljaldjaldjslajdlsajdlsajdlasj"]
-    
     var chatRooms: [ChatService.ChatRoom] = []
     
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
-
+    
+    private var myUserId: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,6 +75,20 @@ class ChatsVC: UIViewController {
         }
     }
     
+    // Get Room name.
+    private func getRoomName(chatRoom: ChatService.ChatRoom) -> String {
+        // Set to username of the other user.
+        for user in chatRoom.users {
+            if user.user_id != self.myUserId {
+                return user.username
+            }
+        }
+        
+        // Should never reach this line.
+        raise(-1)
+        return ""
+    }
+    
     // Show loading spinner.
     private func showSpinner() {
         activityIndicator.startAnimating()
@@ -100,7 +112,7 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatRoomTableViewCell") as! ChatRoomTableViewCell
         
-        cell.setName(name: chatRoom.name)
+        cell.setName(name: getRoomName(chatRoom: chatRoom))
         
         return cell
     }
@@ -111,9 +123,15 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ChatRoomVC") as! ChatRoomVC
-        vc.chatRoomName = chatRoom.name
+        vc.setRoom(chatRoom: chatRoom)
+        vc.chatRoomDelegate = self
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
-    
+}
+
+extension ChatsVC: ChatRoomDelegate {
+    func reloadChatRooms() {
+        listChatRooms()
+    }
 }

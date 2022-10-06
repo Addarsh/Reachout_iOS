@@ -8,9 +8,7 @@
 import UIKit
 
 class MyMessageTableViewCell: UITableViewCell {
-    
-    
-    @IBOutlet weak var message: PaddingLabel!
+    @IBOutlet weak var message: UILabel!
     
     func setMessage(message: String) {
         self.message.text = message
