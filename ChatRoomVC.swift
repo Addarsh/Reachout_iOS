@@ -28,9 +28,9 @@ class ChatRoomVC: UIViewController {
     
     @IBOutlet weak var roomName: UILabel!
     
-    @IBOutlet weak var typingLabel: UITextField!
-    
     @IBOutlet weak var acceptInvite: UIButton!
+    
+    @IBOutlet weak var postMessageView: UITextView!
     
     @IBOutlet weak var rejectInvite: UIButton!
     
@@ -52,7 +52,11 @@ class ChatRoomVC: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        textField.layer.borderWidth = 1
+        //textField.layer.borderWidth = 1
+        postMessageView.layer.borderWidth = 1
+        postMessageView.layer.borderColor = UIColor.black.cgColor
+        postMessageView.layer.cornerRadius = 5
+        postMessageView.backgroundColor = UIColor.white
         
         // call the 'keyboardWillShow' function when the view controller receive notification that keyboard is going to be shown
         NotificationCenter.default.addObserver(self, selector: #selector(ChatRoomVC.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -67,8 +71,6 @@ class ChatRoomVC: UIViewController {
         tableView.delegate = self
         tableView.backgroundColor = UIColor.white
         tableView.separatorColor = UIColor.clear
-        
-        typingLabel.layer.cornerRadius = 5
         
         listChatMessages()
         
@@ -117,6 +119,12 @@ class ChatRoomVC: UIViewController {
                 }
             case .failure(let error):
                 print("list Chat messages failed with error: \(error.localizedDescription)")
+            }
+            
+            // Scroll to the bottom of the table view.
+            DispatchQueue.main.async {
+                // Scroll down to bottom of table view by default.
+                self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
             }
         }
     }
@@ -225,9 +233,11 @@ class ChatRoomVC: UIViewController {
     
     // Handler for when user posts a message.
     @IBAction func didSendMessage(_ sender: Any) {
-        guard let message = textField.text else {
+        /*guard let message = textField.text else {
             return
-        }
+        }*/
+        let message = postMessageView.text.description
+        
         if message == "" {
             // TODO: Show error since message cannot be empty.
             return
@@ -237,7 +247,7 @@ class ChatRoomVC: UIViewController {
         postChatMessage(message: message)
         
         // Clear text field.
-        self.textField.text = ""
+        self.postMessageView.text = ""
     }
     
     // Post message to server.
