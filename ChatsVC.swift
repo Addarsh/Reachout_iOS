@@ -97,6 +97,13 @@ class ChatsVC: UIViewController {
         return ""
     }
     
+    @IBAction func gotToAccount(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "UserAccountVC")
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
+    }
+    
     // Show loading spinner.
     private func showSpinner() {
         activityIndicator.startAnimating()
