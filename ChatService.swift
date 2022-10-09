@@ -57,8 +57,13 @@ class ChatService {
         let message: String
     }
     
+    struct ChatRoomReadRequest: Codable {
+        let room_id: String
+    }
+    
     static let chat_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat/")!)
     static let room_url = URLRequest(url: URL(string: Utils.base_endpoint + "room/")!)
+    static let read_url = URLRequest(url: URL(string: Utils.base_endpoint + "read/")!)
     static let chat_invite_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat-invite/")!)
     
     // List chat rooms for given user.
@@ -273,6 +278,50 @@ class ChatService {
             
             resultQueue.async {
                 completionHandler(.success(postedMessage))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    // Mark chat room as read.
+    static func markChatRoomAsRead(roomId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<Int, Error>) -> Void) {
+        var request = read_url
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        
+        request.httpMethod = Utils.RequestType.POST.rawValue
+        request.setValue(Utils.APPLICATION_JSON, forHTTPHeaderField: Utils.CONTENT_TYPE)
+        
+        // Attach POST body.
+        var postBody: Data
+        do {
+            postBody = try JSONEncoder().encode(ChatRoomReadRequest(room_id: roomId))
+        } catch {
+            resultQueue.async {
+                completionHandler(.failure(error))
+            }
+            return
+        }
+        request.httpBody = postBody
+        
+        
+        // Create the HTTP request
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(0))
             }
         }
         

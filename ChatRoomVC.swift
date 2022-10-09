@@ -44,6 +44,8 @@ class ChatRoomVC: UIViewController {
     
     private var chatRoom: ChatService.ChatRoom!
     
+    private var authToken: String = ""
+    
     var messagesInRoom: [ChatService.ChatMessage] = []
     
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
@@ -72,7 +74,13 @@ class ChatRoomVC: UIViewController {
         tableView.backgroundColor = UIColor.white
         tableView.separatorColor = UIColor.clear
         
-        listChatMessages()
+        // Fetch token.
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        self.authToken = token
         
         // Fetch UserId.
         guard let userId = KeychainHelper.read(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT) else {
@@ -85,28 +93,13 @@ class ChatRoomVC: UIViewController {
         let roomName = getRoomName()
         self.roomName.text = roomName
         
-        if isInvitedState() {
-            self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
-            self.acceptInvite.layer.borderWidth = 0.5
-            self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
-            self.rejectInvite.layer.borderWidth = 0.5
-            self.inviteMessageLabel.text = roomName + " wants to chat"
-        } else {
-            hideAcceptOrRejectView()
-        }
+        listChatMessages()
     }
     
     // List chat messages in the space.
     private func listChatMessages() {
-        // Fetch token.
-        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
-            print("Could not read token from keychain")
-            // TODO: Ask user to login again.
-            return
-        }
-        
         // Load chat rooms.
-        ChatService.listMessagesInRoom(roomId: self.chatRoom.room_id, token: token, resultQueue: chatServiceQueue) { result in
+        ChatService.listMessagesInRoom(roomId: self.chatRoom.room_id, token: self.authToken, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
@@ -125,6 +118,34 @@ class ChatRoomVC: UIViewController {
             DispatchQueue.main.async {
                 // Scroll down to bottom of table view by default.
                 self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
+                
+                if self.isInvitedState() {
+                    self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
+                    self.acceptInvite.layer.borderWidth = 0.5
+                    self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
+                    self.rejectInvite.layer.borderWidth = 0.5
+                    self.inviteMessageLabel.text = self.roomName.text! + " wants to chat"
+                } else {
+                    self.hideAcceptOrRejectView()
+                    
+                    // Mark Chat Room as read for the user now.
+                    self.markChatRoomAsRead()
+                }
+            }
+        }
+    }
+    
+    // Mark chat room as read for user.
+    private func markChatRoomAsRead() {
+        // Load chat rooms.
+        ChatService.markChatRoomAsRead(roomId: self.chatRoom.room_id, token: self.authToken, resultQueue: chatServiceQueue) { result in
+            
+            switch result {
+            case .success(_):
+               // Do nothing.
+                break
+            case .failure(let error):
+                print("Mark chat as read failed with error: \(error.localizedDescription)")
             }
         }
     }
@@ -164,17 +185,10 @@ class ChatRoomVC: UIViewController {
     
     // Helper method to accept or reject chat request. Run in main thread.
     private func acceptOrRejectChat(accepted: Bool) {
-        // Fetch token.
-        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
-            print("Could not read token from keychain")
-            // TODO: Ask user to login again.
-            return
-        }
-        
         self.showSpinner()
         
         // Accept or request invite request.
-        ChatService.acceptOrRejectChat(roomId: self.chatRoom.room_id, accepted: accepted, token: token, resultQueue: chatServiceQueue) { result in
+        ChatService.acceptOrRejectChat(roomId: self.chatRoom.room_id, accepted: accepted, token: self.authToken, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
@@ -186,11 +200,12 @@ class ChatRoomVC: UIViewController {
                     self.hideAcceptOrRejectView()
                     
                     if(!accepted) {
-                        // Dismiss chat room.
+                        // Dismiss chat room since uer rejected the request.
                         self.chatRoomDelegate?.reloadChatRooms()
                         self.dismiss(animated: true)
                     }
-                    // Get updated invited state in reloaded chat room.
+                    // Mark chat room as read and reload it to get the updated invited state.
+                    self.markChatRoomAsRead()
                     self.reloadChatRoom()
                 }
             case .failure(let error):
@@ -201,16 +216,9 @@ class ChatRoomVC: UIViewController {
     
     // Reloads current chat room state.
     private func reloadChatRoom() {
-        // Fetch token.
-        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
-            print("Could not read token from keychain")
-            // TODO: Ask user to login again.
-            return
-        }
-        
         // Load chat rooms and filter only the current one.
         // TODO: Create endpoint to only return 1 chat room instead of all of them.
-        ChatService.listChatRooms(token: token, resultQueue: chatServiceQueue) { result in
+        ChatService.listChatRooms(token: self.authToken, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
@@ -227,7 +235,6 @@ class ChatRoomVC: UIViewController {
     
     // Returns true if self user is invited else false.
     private func isInvitedState() -> Bool {
-        print("\(self.chatRoom.users)")
         return self.chatRoom.users.filter({$0.user_id == self.myUserId})[0].state == Utils.ChatUserState.INVITED.rawValue
     }
     
@@ -252,16 +259,9 @@ class ChatRoomVC: UIViewController {
     
     // Post message to server.
     private func postChatMessage(message: String) {
-        // Fetch token.
-        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
-            print("Could not read token from keychain")
-            // TODO: Ask user to login again.
-            return
-        }
-        
         // Load chat rooms and filter only the current one.
         // TODO: Create endpoint to only return 1 chat room instead of all of them.
-        ChatService.postChatMessage(roomId: self.chatRoom.room_id, message: message, token: token, resultQueue: chatServiceQueue) { result in
+        ChatService.postChatMessage(roomId: self.chatRoom.room_id, message: message, token: self.authToken, resultQueue: chatServiceQueue) { result in
             
             switch result {
             case .success(_):
