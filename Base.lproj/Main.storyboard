@@ -323,6 +323,7 @@
                     </view>
                     <connections>
                         <outlet property="acceptInvite" destination="0pB-xy-vJP" id="AOs-5t-x3h"/>
+                        <outlet property="acceptOrRejectStackView" destination="dP2-Y0-W7i" id="nhp-z3-ybs"/>
                         <outlet property="activityIndicator" destination="qiy-SX-oxE" id="f7Y-1E-l6p"/>
                         <outlet property="inviteMessageLabel" destination="Rlw-HX-Jgu" id="xYc-5D-LzM"/>
                         <outlet property="loadingView" destination="Jkk-cW-LKR" id="U0E-ls-VK2"/>

@@ -27,6 +27,14 @@ class ChatsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Fetch UserId.
+        guard let userId = KeychainHelper.read(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT) else {
+            print("Could not read user Id from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        self.myUserId = userId
 
         // Do any additional setup after loading the view.
         tableView.dataSource = self

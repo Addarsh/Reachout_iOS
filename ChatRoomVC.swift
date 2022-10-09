@@ -34,6 +34,8 @@ class ChatRoomVC: UIViewController {
     
     @IBOutlet weak var rejectInvite: UIButton!
     
+    @IBOutlet weak var acceptOrRejectStackView: UIStackView!
+    
     @IBOutlet weak var inviteMessageLabel: UILabel!
     
     var chatRoomDelegate: ChatRoomDelegate?
@@ -121,9 +123,8 @@ class ChatRoomVC: UIViewController {
     
     // Must call in Main dispatch queue.
     private func hideAcceptOrRejectView() {
-        self.acceptInvite.isHidden = true
-        self.rejectInvite.isHidden = true
         self.inviteMessageLabel.isHidden = true
+        self.acceptOrRejectStackView.isHidden = true
     }
     
     // Public method to set chat room to given room.
@@ -153,7 +154,7 @@ class ChatRoomVC: UIViewController {
         acceptOrRejectChat(accepted: false)
     }
     
-    // Helper method to accept or reject chat request.
+    // Helper method to accept or reject chat request. Run in main thread.
     private func acceptOrRejectChat(accepted: Bool) {
         // Fetch token.
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
@@ -161,6 +162,8 @@ class ChatRoomVC: UIViewController {
             // TODO: Ask user to login again.
             return
         }
+        
+        self.showSpinner()
         
         // Accept or request invite request.
         ChatService.acceptOrRejectChat(roomId: self.chatRoom.room_id, accepted: accepted, token: token, resultQueue: chatServiceQueue) { result in
@@ -197,7 +200,8 @@ class ChatRoomVC: UIViewController {
             return
         }
         
-        // Load chat rooms.
+        // Load chat rooms and filter only the current one.
+        // TODO: Create endpoint to only return 1 chat room instead of all of them.
         ChatService.listChatRooms(token: token, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
@@ -207,7 +211,6 @@ class ChatRoomVC: UIViewController {
             case .success(let gotChatRooms):
                 let gotRoom = gotChatRooms.filter({$0.room_id == self.chatRoom.room_id})[0]
                 self.chatRoom = gotRoom
-                print("New state: \(self.chatRoom!)")
             case .failure(let error):
                 print("Reload Chats failed with error: \(error.localizedDescription)")
             }
@@ -216,25 +219,9 @@ class ChatRoomVC: UIViewController {
     
     // Returns true if self user is invited else false.
     private func isInvitedState() -> Bool {
+        print("\(self.chatRoom.users)")
         return self.chatRoom.users.filter({$0.user_id == self.myUserId})[0].state == Utils.ChatUserState.INVITED.rawValue
     }
-    
-    // Based on code from https://fluffy.es/move-view-when-keyboard-is-shown/
-    @objc func keyboardWillShow(notification: NSNotification) {
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
-           // if keyboard size is not available for some reason, dont do anything
-           return
-        }
-      
-      // move the root view up by the distance of keyboard height
-      self.view.frame.origin.y = 0 - keyboardSize.height
-    }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-      // move back the root view origin to zero
-      self.view.frame.origin.y = 0
-    }
-    
     
     // Handler for when user posts a message.
     @IBAction func didSendMessage(_ sender: Any) {
@@ -247,11 +234,35 @@ class ChatRoomVC: UIViewController {
         }
         
         // Add to messages in room.
-        //messagesInRoom.append(ChatMessage(text: message,sent_by_me: true))
-        self.tableView.reloadData()
+        postChatMessage(message: message)
         
         // Clear text field.
         self.textField.text = ""
+    }
+    
+    // Post message to server.
+    private func postChatMessage(message: String) {
+        // Fetch token.
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        
+        // Load chat rooms and filter only the current one.
+        // TODO: Create endpoint to only return 1 chat room instead of all of them.
+        ChatService.postChatMessage(roomId: self.chatRoom.room_id, message: message, token: token, resultQueue: chatServiceQueue) { result in
+            
+            switch result {
+            case .success(_):
+                // Load chat messages in room.
+                // TODO: Load only unread messages
+                self.listChatMessages()
+            case .failure(let error):
+                print("Reload Chats failed with error: \(error.localizedDescription)")
+            }
+        }
+        
     }
     
     // Show loading spinner.
@@ -267,7 +278,26 @@ class ChatRoomVC: UIViewController {
     }
 
     @IBAction func back(_ sender: Any) {
+        // Reload chats.
+        self.chatRoomDelegate?.reloadChatRooms()
         self.dismiss(animated: true)
+    }
+    
+    
+    // Based on code from https://fluffy.es/move-view-when-keyboard-is-shown/
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+           // if keyboard size is not available for some reason, dont do anything
+           return
+        }
+      
+      // move the root view up by the distance of keyboard height
+      self.view.frame.origin.y = 0 - keyboardSize.height
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+      // move back the root view origin to zero
+      self.view.frame.origin.y = 0
     }
     
 }

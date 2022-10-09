@@ -52,7 +52,13 @@ class ChatService {
         let accepted: Bool
     }
     
+    struct PostMessageRequest: Codable {
+        let room_id: String
+        let message: String
+    }
+    
     static let chat_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat/")!)
+    static let room_url = URLRequest(url: URL(string: Utils.base_endpoint + "room/")!)
     static let chat_invite_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat-invite/")!)
     
     // List chat rooms for given user.
@@ -213,6 +219,60 @@ class ChatService {
             
             resultQueue.async {
                 completionHandler(.success(0))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    // Post a chat message in chat room.
+    static func postChatMessage(roomId: String, message: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<ChatMessage, Error>) -> Void) {
+        var request = room_url
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        
+        request.httpMethod = Utils.RequestType.POST.rawValue
+        request.setValue(Utils.APPLICATION_JSON, forHTTPHeaderField: Utils.CONTENT_TYPE)
+        
+        // Attach POST body.
+        var postBody: Data
+        do {
+            postBody = try JSONEncoder().encode(PostMessageRequest(room_id: roomId, message: message))
+        } catch {
+            resultQueue.async {
+                completionHandler(.failure(error))
+            }
+            return
+        }
+        request.httpBody = postBody
+        
+        
+        // Create the HTTP request
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let responseData = data, error == nil else {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            var postedMessage: ChatMessage!
+            do {
+                postedMessage = try JSONDecoder().decode(ChatMessage.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(postedMessage))
             }
         }
         
