@@ -54,38 +54,6 @@
                                     <constraint firstAttribute="bottom" secondItem="8xA-Dz-v6A" secondAttribute="bottom" constant="20" id="uqm-OY-UBe"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4lq-0b-tiM">
-                                <rect key="frame" x="0.0" y="120" width="390" height="641"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatRoomTableViewCell" rowHeight="90" id="GeP-hO-PZS" customClass="ChatRoomTableViewCell" customModule="reachout_ios" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="390" height="90"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GeP-hO-PZS" id="I3z-By-PsZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="90"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wdL-Z8-Aqh">
-                                                    <rect key="frame" x="20" y="10" width="350" height="70"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="wdL-Z8-Aqh" firstAttribute="top" secondItem="I3z-By-PsZ" secondAttribute="top" constant="10" id="NQ8-wd-56G"/>
-                                                <constraint firstAttribute="trailing" secondItem="wdL-Z8-Aqh" secondAttribute="trailing" constant="20" id="ZId-qo-WtR"/>
-                                                <constraint firstAttribute="bottom" secondItem="wdL-Z8-Aqh" secondAttribute="bottom" constant="10" id="ZOw-eh-oCl"/>
-                                                <constraint firstItem="wdL-Z8-Aqh" firstAttribute="leading" secondItem="I3z-By-PsZ" secondAttribute="leading" constant="20" id="eeo-dw-Q03"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <connections>
-                                            <outlet property="chatRoomName" destination="wdL-Z8-Aqh" id="rdW-G5-4jx"/>
-                                        </connections>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I70-MN-WZD">
                                 <rect key="frame" x="170" y="397" width="50" height="50"/>
                                 <subviews>
@@ -100,6 +68,54 @@
                                     <constraint firstAttribute="height" constant="50" id="iW7-Ym-FyU"/>
                                 </constraints>
                             </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4lq-0b-tiM">
+                                <rect key="frame" x="0.0" y="120" width="390" height="641"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatRoomTableViewCell" rowHeight="90" id="GeP-hO-PZS" customClass="ChatRoomTableViewCell" customModule="reachout_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="390" height="90"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GeP-hO-PZS" id="I3z-By-PsZ">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="90"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wdL-Z8-Aqh">
+                                                    <rect key="frame" x="20" y="10" width="250" height="70"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="250" id="uqC-5o-GDm"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JGU-62-6AO">
+                                                    <rect key="frame" x="340" y="30" width="30" height="30"/>
+                                                    <color key="backgroundColor" systemColor="systemRedColor"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="qVh-tt-Qko"/>
+                                                        <constraint firstAttribute="width" constant="30" id="rLp-4z-FON"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="20"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="JGU-62-6AO" firstAttribute="top" secondItem="I3z-By-PsZ" secondAttribute="top" constant="30" id="7rz-Kg-QsD"/>
+                                                <constraint firstAttribute="trailing" secondItem="JGU-62-6AO" secondAttribute="trailing" constant="20" id="BrM-gc-Zni"/>
+                                                <constraint firstItem="wdL-Z8-Aqh" firstAttribute="top" secondItem="I3z-By-PsZ" secondAttribute="top" constant="10" id="NQ8-wd-56G"/>
+                                                <constraint firstAttribute="bottom" secondItem="wdL-Z8-Aqh" secondAttribute="bottom" constant="10" id="ZOw-eh-oCl"/>
+                                                <constraint firstItem="wdL-Z8-Aqh" firstAttribute="leading" secondItem="I3z-By-PsZ" secondAttribute="leading" constant="20" id="eeo-dw-Q03"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="chatRoomName" destination="wdL-Z8-Aqh" id="rdW-G5-4jx"/>
+                                            <outlet property="unreadMessagesLabel" destination="JGU-62-6AO" id="Zd5-Lo-vZy"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="aPK-FH-l6F"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -125,7 +141,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="40Z-OY-JDJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="860" y="-80"/>
+            <point key="canvasLocation" x="860" y="-80.33175355450237"/>
         </scene>
         <!--Chat RoomVC-->
         <scene sceneID="Jwk-bH-gTD">

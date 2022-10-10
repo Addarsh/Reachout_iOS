@@ -118,6 +118,10 @@ class ChatsVC: UIViewController {
 }
 
 extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return chatRooms.count
     }
@@ -127,7 +131,7 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatRoomTableViewCell") as! ChatRoomTableViewCell
         
-        cell.setName(name: getRoomName(chatRoom: chatRoom))
+        cell.setName(name: getRoomName(chatRoom: chatRoom), numUnreadMessages: chatRoom.num_unread_messages)
         
         return cell
     }

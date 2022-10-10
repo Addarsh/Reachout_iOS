@@ -27,6 +27,7 @@ class ChatService {
         let name: String
         let last_message: LastMessage
         let users: [ChatUser]
+        let num_unread_messages: Int
     }
     
     // Start a new chat.
