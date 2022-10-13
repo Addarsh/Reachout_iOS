@@ -38,6 +38,11 @@ class ChatRoomVC: UIViewController {
     
     @IBOutlet weak var inviteMessageLabel: UILabel!
     
+    private var chatRoomTimer: Timer?
+    
+    // Poll every 5 seconds when the app is active.
+    private let chatRoomIntervalSeconds: Double = 5
+    
     var chatRoomDelegate: ChatRoomDelegate?
     
     private var myUserId: String = ""
@@ -133,6 +138,21 @@ class ChatRoomVC: UIViewController {
                 }
             }
         }
+    }
+    
+    // Start timer when view appears.
+    override func viewWillAppear(_ animated: Bool) {
+        chatRoomTimer = Timer.scheduledTimer(timeInterval: chatRoomIntervalSeconds, target: self, selector: #selector(chatRoomHandler), userInfo: nil, repeats: true)
+    }
+    
+    // Handler for the fetch posts periodic timer.
+    @objc func chatRoomHandler() {
+        listChatMessages()
+    }
+    
+    // Disable timer when we leave view controller.
+    override func viewWillDisappear(_ animated: Bool) {
+        chatRoomTimer?.invalidate()
     }
     
     // Mark chat room as read for user.

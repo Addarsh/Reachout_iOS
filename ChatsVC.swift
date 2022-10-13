@@ -19,6 +19,11 @@ class ChatsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    private var fetchChatsTimer: Timer?
+    
+    // Poll every 1 minute when app is active.
+    private let fetchChatsIntervalSeconds: Double = 60
+    
     var chatRooms: [ChatService.ChatRoom] = []
     
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
@@ -55,6 +60,18 @@ class ChatsVC: UIViewController {
         if let selectedIndexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: selectedIndexPath, animated: animated)
         }
+        
+        fetchChatsTimer = Timer.scheduledTimer(timeInterval: fetchChatsIntervalSeconds, target: self, selector: #selector(fetchChatsHandler), userInfo: nil, repeats: true)
+    }
+    
+    // Handler for the fetch chats periodic timer.
+    @objc func fetchChatsHandler() {
+        listChatRooms()
+    }
+    
+    // Disable timer when we leave view controller.
+    override func viewWillDisappear(_ animated: Bool) {
+        fetchChatsTimer?.invalidate()
     }
     
     private func listChatRooms() {

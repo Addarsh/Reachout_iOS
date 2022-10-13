@@ -22,6 +22,11 @@ class PostsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    private var fetchPostsTimer: Timer?
+    
+    // Poll every 1 minute when the app is active.
+    private let fetchPostsIntervalSeconds: Double = 60
+    
     private var userId: String = ""
     
     // Posts on the page.
@@ -51,6 +56,21 @@ class PostsVC: UIViewController {
             return
         }
         self.userId = userId
+    }
+    
+    // Start timer when view appears.
+    override func viewWillAppear(_ animated: Bool) {
+        fetchPostsTimer = Timer.scheduledTimer(timeInterval: fetchPostsIntervalSeconds, target: self, selector: #selector(fetchPostsHandler), userInfo: nil, repeats: true)
+    }
+    
+    // Handler for the fetch posts periodic timer.
+    @objc func fetchPostsHandler() {
+        fetchLatestPosts()
+    }
+    
+    // Disable timer when we leave view controller.
+    override func viewWillDisappear(_ animated: Bool) {
+        fetchPostsTimer?.invalidate()
     }
     
     // Fetch latest posts from server.
