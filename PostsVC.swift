@@ -22,11 +22,6 @@ class PostsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private var fetchPostsTimer: Timer?
-    
-    // Poll every 1 minute when the app is active.
-    private let fetchPostsIntervalSeconds: Double = 60
-    
     private var userId: String = ""
     
     // Posts on the page.
@@ -38,16 +33,15 @@ class PostsVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
 
         // Do any additional setup after loading the view.
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
-        
-        // Start spinner.
-        showSpinner()
-        
-        fetchLatestPosts()
+
         
         // Fetch user_id.
         guard let userId = KeychainHelper.read(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT) else {
@@ -58,19 +52,24 @@ class PostsVC: UIViewController {
         self.userId = userId
     }
     
+    @objc private func appMovedToForeground() {
+        // Start spinner.
+        showSpinner()
+        
+        fetchLatestPosts()
+    }
+    
     // Start timer when view appears.
     override func viewWillAppear(_ animated: Bool) {
-        fetchPostsTimer = Timer.scheduledTimer(timeInterval: fetchPostsIntervalSeconds, target: self, selector: #selector(fetchPostsHandler), userInfo: nil, repeats: true)
+        // Start spinner.
+        showSpinner()
+        
+        fetchLatestPosts()
     }
     
     // Handler for the fetch posts periodic timer.
     @objc func fetchPostsHandler() {
         fetchLatestPosts()
-    }
-    
-    // Disable timer when we leave view controller.
-    override func viewWillDisappear(_ animated: Bool) {
-        fetchPostsTimer?.invalidate()
     }
     
     // Fetch latest posts from server.

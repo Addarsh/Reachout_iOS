@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol ChatRoomDelegate {
-    func reloadChatRooms()
-}
-
 class ChatRoomVC: UIViewController {
     
     @IBOutlet weak var loadingView: UIView! {
@@ -43,8 +39,6 @@ class ChatRoomVC: UIViewController {
     // Poll every 5 seconds when the app is active.
     private let chatRoomIntervalSeconds: Double = 5
     
-    var chatRoomDelegate: ChatRoomDelegate?
-    
     private var myUserId: String = ""
     
     private var chatRoom: ChatService.ChatRoom!
@@ -57,6 +51,10 @@ class ChatRoomVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        nc.addObserver(self, selector: #selector(appMovedToBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
 
         // Do any additional setup after loading the view.
         //textField.layer.borderWidth = 1
@@ -140,6 +138,17 @@ class ChatRoomVC: UIViewController {
         }
     }
     
+    @objc private func appMovedToForeground() {
+        // Start spinner.
+        showSpinner()
+        
+        listChatMessages()
+    }
+    
+    @objc private func appMovedToBackground() {
+        chatRoomTimer?.invalidate()
+    }
+    
     // Start timer when view appears.
     override func viewWillAppear(_ animated: Bool) {
         chatRoomTimer = Timer.scheduledTimer(timeInterval: chatRoomIntervalSeconds, target: self, selector: #selector(chatRoomHandler), userInfo: nil, repeats: true)
@@ -221,7 +230,6 @@ class ChatRoomVC: UIViewController {
                     
                     if(!accepted) {
                         // Dismiss chat room since uer rejected the request.
-                        self.chatRoomDelegate?.reloadChatRooms()
                         self.dismiss(animated: true)
                     }
                     // Mark chat room as read and reload it to get the updated invited state.
@@ -309,7 +317,6 @@ class ChatRoomVC: UIViewController {
 
     @IBAction func back(_ sender: Any) {
         // Reload chats.
-        self.chatRoomDelegate?.reloadChatRooms()
         self.dismiss(animated: true)
     }
     

@@ -19,11 +19,6 @@ class ChatsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private var fetchChatsTimer: Timer?
-    
-    // Poll every 1 minute when app is active.
-    private let fetchChatsIntervalSeconds: Double = 60
-    
     var chatRooms: [ChatService.ChatRoom] = []
     
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
@@ -32,6 +27,10 @@ class ChatsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(appMovedToForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+
         
         // Fetch UserId.
         guard let userId = KeychainHelper.read(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT) else {
@@ -45,12 +44,14 @@ class ChatsVC: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = UIColor.white
+        
+    }
     
-        // Fetch chat rooms.
+    @objc private func appMovedToForeground() {
+        // Start spinner.
         showSpinner()
         
         listChatRooms()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,17 +62,15 @@ class ChatsVC: UIViewController {
             tableView.deselectRow(at: selectedIndexPath, animated: animated)
         }
         
-        fetchChatsTimer = Timer.scheduledTimer(timeInterval: fetchChatsIntervalSeconds, target: self, selector: #selector(fetchChatsHandler), userInfo: nil, repeats: true)
+        // Fetch chat rooms.
+        showSpinner()
+        
+        listChatRooms()
     }
     
     // Handler for the fetch chats periodic timer.
     @objc func fetchChatsHandler() {
         listChatRooms()
-    }
-    
-    // Disable timer when we leave view controller.
-    override func viewWillDisappear(_ animated: Bool) {
-        fetchChatsTimer?.invalidate()
     }
     
     private func listChatRooms() {
@@ -160,14 +159,7 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ChatRoomVC") as! ChatRoomVC
         vc.setRoom(chatRoom: chatRoom)
-        vc.chatRoomDelegate = self
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
-    }
-}
-
-extension ChatsVC: ChatRoomDelegate {
-    func reloadChatRooms() {
-        listChatRooms()
     }
 }
