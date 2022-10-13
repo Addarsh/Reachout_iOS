@@ -19,6 +19,8 @@ class ChatsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    var pullControl = UIRefreshControl()
+    
     var chatRooms: [ChatService.ChatRoom] = []
     
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
@@ -45,6 +47,16 @@ class ChatsVC: UIViewController {
         tableView.delegate = self
         tableView.backgroundColor = UIColor.white
         
+        pullControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        pullControl.addTarget(self, action: #selector(pulledRefreshControl(_:)), for: UIControl.Event.valueChanged)
+        tableView.addSubview(pullControl)
+        
+    }
+    
+    @objc func pulledRefreshControl(_ sender:AnyObject) {
+        listChatRooms()
+
+        pullControl.endRefreshing()
     }
     
     @objc private func appMovedToForeground() {

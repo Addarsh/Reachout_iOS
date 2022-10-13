@@ -22,6 +22,8 @@ class PostsVC: UIViewController {
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
+    var pullControl = UIRefreshControl()
+    
     private var userId: String = ""
     
     // Posts on the page.
@@ -41,6 +43,10 @@ class PostsVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
+        
+        pullControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        pullControl.addTarget(self, action: #selector(pulledRefreshControl(_:)), for: UIControl.Event.valueChanged)
+        tableView.addSubview(pullControl)
 
         
         // Fetch user_id.
@@ -50,6 +56,12 @@ class PostsVC: UIViewController {
             return
         }
         self.userId = userId
+    }
+    
+    @objc func pulledRefreshControl(_ sender:AnyObject) {
+        fetchLatestPosts()
+
+        pullControl.endRefreshing()
     }
     
     @objc private func appMovedToForeground() {
