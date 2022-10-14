@@ -26,8 +26,6 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
     
     private let postsServiceQueue = DispatchQueue(label: "Posts service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
     
-    public var postsDelegate: PostsDelegate?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -83,9 +81,7 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
             case .success(_):
                 DispatchQueue.main.async {
                     self.hideSpinner()
-                    self.dismiss(animated: true) {
-                        self.postsDelegate?.reloadPosts()
-                    }
+                    self.dismiss(animated: true)
                 }
             case .failure(let error):
                 // TODO: Show error toast here.

@@ -47,7 +47,8 @@ class ChatsVC: UIViewController {
         tableView.delegate = self
         tableView.backgroundColor = UIColor.white
         
-        pullControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        pullControl.attributedTitle = NSAttributedString(string: "Fetching chats")
+        pullControl.tintColor = UIColor.systemBlue
         pullControl.addTarget(self, action: #selector(pulledRefreshControl(_:)), for: UIControl.Event.valueChanged)
         tableView.addSubview(pullControl)
         

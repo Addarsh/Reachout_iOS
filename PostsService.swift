@@ -37,8 +37,11 @@ class PostsService {
     
     
     // Fetcha all the posts made by users.
-    static func listPosts(token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[Post], Error>) -> Void) {
+    static func listPosts(token: String, createdTime: String?, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[Post], Error>) -> Void) {
         var request =  url
+        if createdTime != nil {
+            request = URLRequest(url: URL(string: Utils.base_endpoint + "post/?created_time=" + createdTime!)!)
+        }
         
         // Set token in header.
         request.setValue(
