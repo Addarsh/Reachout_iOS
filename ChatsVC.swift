@@ -53,6 +53,7 @@ class ChatsVC: UIViewController {
         tableView.delegate = self
         tableView.backgroundColor = UIColor.white
         
+        // To ensure chats are loaded when the user pull to refresh from the top.
         pullControl.attributedTitle = NSAttributedString(string: "Fetching chats")
         pullControl.tintColor = UIColor.systemBlue
         pullControl.addTarget(self, action: #selector(pulledRefreshControl(_:)), for: UIControl.Event.valueChanged)

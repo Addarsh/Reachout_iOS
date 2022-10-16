@@ -154,8 +154,53 @@ class ChatService {
     }
     
     // List messages in chat room.
-    static func listMessagesInRoom(roomId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatMessage], Error>) -> Void) {
-        var request = URLRequest(url: URL(string: Utils.base_endpoint + "message/?room_id=" + roomId)!)
+    static func listMessagesInRoom(roomId: String, lastCreatedTime: String?, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatMessage], Error>) -> Void) {
+        var request: URLRequest
+        if lastCreatedTime == nil {
+            request = URLRequest(url: URL(string: Utils.base_endpoint + "message/?room_id=" + roomId)!)
+        }else {
+            request = URLRequest(url: URL(string: Utils.base_endpoint + "message/?room_id=" + roomId + "&created_time=" + lastCreatedTime!)!)
+        }
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        
+        request.httpMethod = Utils.RequestType.GET.rawValue
+        
+        // Create the HTTP request
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let responseData = data, error == nil else {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            var messages: [ChatMessage] = []
+            do {
+                messages = try JSONDecoder().decode([ChatMessage].self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(messages))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    // List unread messages in chat room based on latest creation time.
+    static func listUnreadMessagesInRoom(roomId: String, lastCreatedTime: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatMessage], Error>) -> Void) {
+        var request = URLRequest(url: URL(string: Utils.base_endpoint + "unread-message/?room_id=" + roomId + "&created_time=" + lastCreatedTime)!)
         
         // Set token in header.
         request.setValue(

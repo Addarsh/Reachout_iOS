@@ -36,8 +36,8 @@ class ChatRoomVC: UIViewController {
     
     private var chatRoomTimer: Timer?
     
-    // Poll every 5 seconds when the app is active.
-    private let chatRoomIntervalSeconds: Double = 5
+    // Poll frequency when the app is active.
+    private let chatRoomIntervalSeconds: Double = 15
     
     private var myUserId: String = ""
     
@@ -46,6 +46,8 @@ class ChatRoomVC: UIViewController {
     private var authToken: String = ""
     
     var messagesInRoom: [ChatService.ChatMessage] = []
+    
+    var pullControl = UIRefreshControl()
     
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
@@ -77,6 +79,12 @@ class ChatRoomVC: UIViewController {
         tableView.backgroundColor = UIColor.white
         tableView.separatorColor = UIColor.clear
         
+        // To ensure messages are loaded when the user pull to refresh from the top.
+        pullControl.attributedTitle = NSAttributedString(string: "Fetching messages")
+        pullControl.tintColor = UIColor.systemBlue
+        pullControl.addTarget(self, action: #selector(pulledRefreshControl(_:)), for: UIControl.Event.valueChanged)
+        tableView.addSubview(pullControl)
+        
         self.hideAcceptOrRejectView()
         
         // Fetch token.
@@ -98,20 +106,36 @@ class ChatRoomVC: UIViewController {
         let roomName = getRoomName()
         self.roomName.text = roomName
         
-        listChatMessages()
+        listChatMessages(lastCreatedTime: nil, scrollToBottom: true)
+    }
+    
+    // Get next set of older messages.
+    @objc func pulledRefreshControl(_ sender:AnyObject) {
+        // Chats in increasing order of created time. So the first message is the one with earliest time.
+        if let message = messagesInRoom.first {
+            listChatMessages(lastCreatedTime: message.created_time)
+            
+            pullControl.endRefreshing()
+        }
     }
     
     // List chat messages in the space.
-    private func listChatMessages() {
+    private func listChatMessages(lastCreatedTime: String?, scrollToBottom: Bool = false) {
         // Load chat rooms.
-        ChatService.listMessagesInRoom(roomId: self.chatRoom.room_id, token: self.authToken, resultQueue: chatServiceQueue) { result in
+        ChatService.listMessagesInRoom(roomId: self.chatRoom.room_id, lastCreatedTime: lastCreatedTime, token: self.authToken, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
             
             switch result {
-            case .success(let gotMessages):
-                self.messagesInRoom = gotMessages
+            case .success(var gotMessages):
+                // We need to reverse the messages since they are returned in decreasing order of creation time in the API response.
+                gotMessages.reverse()
+                if lastCreatedTime == nil {
+                    self.messagesInRoom = gotMessages
+                } else {
+                    self.messagesInRoom = gotMessages + self.messagesInRoom
+                }
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -119,26 +143,53 @@ class ChatRoomVC: UIViewController {
                 print("list Chat messages failed with error: \(error.localizedDescription)")
             }
             
-            // Scroll to the bottom of the table view.
-            DispatchQueue.main.async {
-                // Scroll down to bottom of table view by default.
-                self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
+            if scrollToBottom {
+                // Scroll to the bottom of the table view.
+                DispatchQueue.main.async {
+                    // Scroll down to bottom of table view by default.
+                    self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
+                }
+            }
+            
+            if self.isInvitedState() {
+                // Show accept/reject optiosn.
+                self.inviteMessageLabel.isHidden = false
+                self.acceptOrRejectStackView.isHidden = false
                 
-                if self.isInvitedState() {
-                    self.inviteMessageLabel.isHidden = false
-                    self.acceptOrRejectStackView.isHidden = false
+                self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
+                self.acceptInvite.layer.borderWidth = 0.5
+                self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
+                self.rejectInvite.layer.borderWidth = 0.5
+                self.inviteMessageLabel.text = self.roomName.text! + " wants to chat"
+            } else {
+                // Mark Chat Room as read for the user now.
+                self.markChatRoomAsRead()
+            }
+        }
+    }
+    
+    // Fetch unread messages in given space, scroll to bottom (if any found) and mark as read.
+    private func listUnreadMessages(lastCreatedTime: String) {
+        // Load chat rooms.
+        ChatService.listUnreadMessagesInRoom(roomId: self.chatRoom.room_id, lastCreatedTime: lastCreatedTime, token: self.authToken, resultQueue: chatServiceQueue) { result in
+            
+            switch result {
+            case .success(var gotUnreadMessages):
+                if gotUnreadMessages.count > 0 {
+                    // We need to reverse the messages since they are returned in decreasing order of creation time in the API response.
+                    gotUnreadMessages.reverse()
+                    self.messagesInRoom = self.messagesInRoom + gotUnreadMessages
                     
-                    self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
-                    self.acceptInvite.layer.borderWidth = 0.5
-                    self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
-                    self.rejectInvite.layer.borderWidth = 0.5
-                    self.inviteMessageLabel.text = self.roomName.text! + " wants to chat"
-                } else {
-                    self.hideAcceptOrRejectView()
-                    
-                    // Mark Chat Room as read for the user now.
+                    // Scroll to the bottom of the table view.
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                        // Scroll down to bottom of table view.
+                        self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
+                    }
                     self.markChatRoomAsRead()
                 }
+            case .failure(let error):
+                print("list Chat messages failed with error: \(error.localizedDescription)")
             }
         }
     }
@@ -147,7 +198,7 @@ class ChatRoomVC: UIViewController {
         // Start spinner.
         showSpinner()
         
-        listChatMessages()
+        listChatMessages(lastCreatedTime: nil)
     }
     
     @objc private func appMovedToBackground() {
@@ -161,7 +212,8 @@ class ChatRoomVC: UIViewController {
     
     // Handler for the fetch posts periodic timer.
     @objc func chatRoomHandler() {
-        listChatMessages()
+        // Fetch only unread messages.
+        listUnreadMessages(lastCreatedTime: self.messagesInRoom.last!.created_time)
     }
     
     // Disable timer when we leave view controller.
@@ -272,9 +324,6 @@ class ChatRoomVC: UIViewController {
     
     // Handler for when user posts a message.
     @IBAction func didSendMessage(_ sender: Any) {
-        /*guard let message = textField.text else {
-            return
-        }*/
         let message = postMessageView.text.description
         
         if message == "" {
@@ -291,15 +340,12 @@ class ChatRoomVC: UIViewController {
     
     // Post message to server.
     private func postChatMessage(message: String) {
-        // Load chat rooms and filter only the current one.
-        // TODO: Create endpoint to only return 1 chat room instead of all of them.
         ChatService.postChatMessage(roomId: self.chatRoom.room_id, message: message, token: self.authToken, resultQueue: chatServiceQueue) { result in
             
             switch result {
             case .success(_):
-                // Load chat messages in room.
-                // TODO: Load only unread messages
-                self.listChatMessages()
+                // Load newly posted message in room.
+                self.listUnreadMessages(lastCreatedTime: self.messagesInRoom.last!.created_time)
             case .failure(let error):
                 print("Reload Chats failed with error: \(error.localizedDescription)")
             }
