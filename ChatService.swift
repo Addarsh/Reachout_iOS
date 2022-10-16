@@ -63,8 +63,8 @@ class ChatService {
         let room_id: String
     }
     
-    static let chat_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat/")!)
-    static let room_url = URLRequest(url: URL(string: Utils.base_endpoint + "room/")!)
+    static let chat_url = URLRequest(url: URL(string: Utils.base_endpoint + "chats/")!)
+    static let room_url = URLRequest(url: URL(string: Utils.base_endpoint + "message/")!)
     static let read_url = URLRequest(url: URL(string: Utils.base_endpoint + "read/")!)
     static let chat_invite_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat-invite/")!)
     
@@ -72,7 +72,7 @@ class ChatService {
     static func listChatRooms(token: String, lastUpdatedTime: String?, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatRoom], Error>) -> Void) {
         var request =  chat_url
         if lastUpdatedTime != nil {
-            request = URLRequest(url: URL(string: Utils.base_endpoint + "chat/?last_updated_time=" + lastUpdatedTime!)!)
+            request = URLRequest(url: URL(string: Utils.base_endpoint + "chats/?last_updated_time=" + lastUpdatedTime!)!)
         }
         
         // Set token in header.
@@ -155,7 +155,7 @@ class ChatService {
     
     // List messages in chat room.
     static func listMessagesInRoom(roomId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatMessage], Error>) -> Void) {
-        var request = URLRequest(url: URL(string: Utils.base_endpoint + "room/?room_id=" + roomId)!)
+        var request = URLRequest(url: URL(string: Utils.base_endpoint + "message/?room_id=" + roomId)!)
         
         // Set token in header.
         request.setValue(
@@ -327,6 +327,45 @@ class ChatService {
             
             resultQueue.async {
                 completionHandler(.success(0))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    static func getChatRoom(roomId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<ChatRoom, Error>) -> Void) {
+        var request = URLRequest(url: URL(string: Utils.base_endpoint + "chat-room/?room_id=" + roomId)!)
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        
+        request.httpMethod = Utils.RequestType.GET.rawValue
+        
+        // Create the HTTP request
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let responseData = data, error == nil else {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            var chatRoom: ChatRoom
+            do {
+                chatRoom = try JSONDecoder().decode(ChatRoom.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(chatRoom))
             }
         }
         

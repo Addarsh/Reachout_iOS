@@ -77,6 +77,8 @@ class ChatRoomVC: UIViewController {
         tableView.backgroundColor = UIColor.white
         tableView.separatorColor = UIColor.clear
         
+        self.hideAcceptOrRejectView()
+        
         // Fetch token.
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
             print("Could not read token from keychain")
@@ -123,6 +125,9 @@ class ChatRoomVC: UIViewController {
                 self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
                 
                 if self.isInvitedState() {
+                    self.inviteMessageLabel.isHidden = false
+                    self.acceptOrRejectStackView.isHidden = false
+                    
                     self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
                     self.acceptInvite.layer.borderWidth = 0.5
                     self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
@@ -234,6 +239,7 @@ class ChatRoomVC: UIViewController {
                         return
                     }
                     // Mark chat room as read and reload it to get the updated invited state.
+                    self.showSpinner()
                     self.markChatRoomAsRead()
                     self.reloadChatRoom()
                 }
@@ -243,21 +249,18 @@ class ChatRoomVC: UIViewController {
         }
     }
     
-    // Reloads current chat room state.
+    // Reloads current chat room.
     private func reloadChatRoom() {
-        // Load chat rooms and filter only the current one.
-        // TODO: Create endpoint to only return 1 chat room instead of all of them.
-        ChatService.listChatRooms(token: self.authToken, lastUpdatedTime: nil, resultQueue: chatServiceQueue) { result in
+        ChatService.getChatRoom(roomId: self.chatRoom.room_id, token: self.authToken, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
             
             switch result {
-            case .success(let gotChatRooms):
-                let gotRoom = gotChatRooms.filter({$0.room_id == self.chatRoom.room_id})[0]
-                self.chatRoom = gotRoom
+            case .success(let gotChatRoom):
+                self.chatRoom = gotChatRoom
             case .failure(let error):
-                print("Reload Chats failed with error: \(error.localizedDescription)")
+                print("Reload Chat Room failed with error: \(error.localizedDescription)")
             }
         }
     }
