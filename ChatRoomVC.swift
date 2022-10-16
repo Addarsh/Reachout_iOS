@@ -231,6 +231,7 @@ class ChatRoomVC: UIViewController {
                     if(!accepted) {
                         // Dismiss chat room since uer rejected the request.
                         self.dismiss(animated: true)
+                        return
                     }
                     // Mark chat room as read and reload it to get the updated invited state.
                     self.markChatRoomAsRead()
@@ -246,7 +247,7 @@ class ChatRoomVC: UIViewController {
     private func reloadChatRoom() {
         // Load chat rooms and filter only the current one.
         // TODO: Create endpoint to only return 1 chat room instead of all of them.
-        ChatService.listChatRooms(token: self.authToken, resultQueue: chatServiceQueue) { result in
+        ChatService.listChatRooms(token: self.authToken, lastUpdatedTime: nil, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }

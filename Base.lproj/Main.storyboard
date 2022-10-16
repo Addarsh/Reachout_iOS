@@ -751,7 +751,7 @@
                                     <constraint firstAttribute="height" constant="150" id="5tt-UT-drm"/>
                                 </constraints>
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YWz-5N-hbe">
@@ -1209,6 +1209,20 @@
                                     <action selector="loginInstead:" destination="E5k-0v-zm0" eventType="touchUpInside" id="b0l-MG-zxa"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HKe-D9-I2R">
+                                <rect key="frame" x="170" y="577" width="50" height="50"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="tTy-rk-M6k">
+                                        <rect key="frame" x="15" y="15" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="SHs-IH-Tpg"/>
+                                    <constraint firstAttribute="height" constant="50" id="cNS-ZS-Lkz"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Uww-Tv-NQE"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1222,14 +1236,18 @@
                             <constraint firstItem="QQs-tu-v99" firstAttribute="leading" secondItem="Uww-Tv-NQE" secondAttribute="leading" constant="40" id="N9i-lC-Sb6"/>
                             <constraint firstItem="HMk-sh-Ep8" firstAttribute="top" secondItem="OoF-7n-hxQ" secondAttribute="bottom" constant="30" id="RMK-Mv-0te"/>
                             <constraint firstItem="QQs-tu-v99" firstAttribute="top" secondItem="nIn-sP-K1c" secondAttribute="bottom" constant="30" id="RhZ-PN-PiI"/>
+                            <constraint firstItem="HKe-D9-I2R" firstAttribute="top" secondItem="HMk-sh-Ep8" secondAttribute="bottom" constant="80" id="SOc-ni-Jok"/>
                             <constraint firstItem="rVz-IU-NAB" firstAttribute="leading" secondItem="HMk-sh-Ep8" secondAttribute="trailing" id="VNw-1Q-qa0"/>
                             <constraint firstItem="Uww-Tv-NQE" firstAttribute="trailing" secondItem="OoF-7n-hxQ" secondAttribute="trailing" constant="40" id="a6s-iK-o1h"/>
+                            <constraint firstItem="HKe-D9-I2R" firstAttribute="centerX" secondItem="yo7-SL-at2" secondAttribute="centerX" id="gi1-Vj-IfE"/>
                             <constraint firstItem="OoF-7n-hxQ" firstAttribute="leading" secondItem="Uww-Tv-NQE" secondAttribute="leading" constant="40" id="pBO-re-7wz"/>
                             <constraint firstItem="rVz-IU-NAB" firstAttribute="top" secondItem="OoF-7n-hxQ" secondAttribute="bottom" constant="30" id="yEi-OX-2YV"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="tTy-rk-M6k" id="hxj-Ez-SSr"/>
                         <outlet property="emailTextField" destination="TfN-2O-1a8" id="gUs-95-ozd"/>
+                        <outlet property="loadingView" destination="HKe-D9-I2R" id="6mJ-kJ-M2j"/>
                         <outlet property="passwordTextField" destination="Ema-FY-RNE" id="LHu-fC-17p"/>
                     </connections>
                 </viewController>

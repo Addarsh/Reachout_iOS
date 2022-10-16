@@ -23,6 +23,12 @@ class ChatsVC: UIViewController {
     
     var chatRooms: [ChatService.ChatRoom] = []
     
+    // To ensure we don't send multiple requests while chats are still loading.
+    private var chatsLoadingBottom = false
+    
+    // To stop loading chats when user scrolls to the bottom and already has oldest chat in memory.
+    private var noMoreChatsToLoad = false
+    
     private let chatServiceQueue = DispatchQueue(label: "Chat service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
     
     private var myUserId: String = ""
@@ -55,7 +61,7 @@ class ChatsVC: UIViewController {
     }
     
     @objc func pulledRefreshControl(_ sender:AnyObject) {
-        listChatRooms()
+        listLatestChatRooms()
 
         pullControl.endRefreshing()
     }
@@ -64,7 +70,7 @@ class ChatsVC: UIViewController {
         // Start spinner.
         showSpinner()
         
-        listChatRooms()
+        listLatestChatRooms()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -78,15 +84,15 @@ class ChatsVC: UIViewController {
         // Fetch chat rooms.
         showSpinner()
         
-        listChatRooms()
+        listLatestChatRooms()
     }
     
-    // Handler for the fetch chats periodic timer.
-    @objc func fetchChatsHandler() {
-        listChatRooms()
-    }
-    
-    private func listChatRooms() {
+    // Fetch latest chat rooms i.e. most recently updated ones.
+    private func listLatestChatRooms() {
+        // Reset variables.
+        self.noMoreChatsToLoad = false
+        self.chatsLoadingBottom = false
+        
         // Fetch token.
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
             print("Could not read token from keychain")
@@ -95,7 +101,7 @@ class ChatsVC: UIViewController {
         }
         
         // Load chat rooms.
-        ChatService.listChatRooms(token: token, resultQueue: chatServiceQueue) { result in
+        ChatService.listChatRooms(token: token, lastUpdatedTime: nil, resultQueue: chatServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
@@ -156,6 +162,12 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if !noMoreChatsToLoad && !chatsLoadingBottom && indexPath.row + 1 == chatRooms.count  {
+            chatsLoadingBottom = true
+            // End of table. fetch the next set of chats.
+            oldestUpdateDate()
+        }
+        
         let chatRoom = chatRooms[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatRoomTableViewCell") as! ChatRoomTableViewCell
@@ -163,6 +175,46 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
         cell.setName(name: getRoomName(chatRoom: chatRoom), numUnreadMessages: chatRoom.num_unread_messages)
         
         return cell
+    }
+    
+    private func oldestUpdateDate() {
+        // Chats in decreasing order of updated time.
+        if let room = chatRooms.last {
+            fetchNextChats(lastUpdatedTime: room.last_updated_time)
+        }
+    }
+    
+    // List next set of chats updated later than given updated time.
+    private func fetchNextChats(lastUpdatedTime: String) {
+        self.showSpinner()
+        
+        // Fetch token.
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        
+        // Load chat rooms.
+        ChatService.listChatRooms(token: token, lastUpdatedTime: lastUpdatedTime, resultQueue: chatServiceQueue) { result in
+            DispatchQueue.main.async {
+                self.hideSpinner()
+            }
+            
+            switch result {
+            case .success(let gotChatRooms):
+                self.chatRooms = self.chatRooms + gotChatRooms
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                    if gotChatRooms.count == 0 {
+                        self.noMoreChatsToLoad = true
+                    }
+                    self.chatsLoadingBottom = false
+                }
+            case .failure(let error):
+                print("list next Chats failed with error: \(error.localizedDescription)")
+            }
+        }
     }
     
     // When a Chat Room is selected by user, enter Chat Room.

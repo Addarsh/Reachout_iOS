@@ -25,6 +25,7 @@ class ChatService {
     struct ChatRoom: Codable {
         let room_id: String
         let name: String
+        let last_updated_time: String
         let last_message: LastMessage
         let users: [ChatUser]
         let num_unread_messages: Int
@@ -68,8 +69,11 @@ class ChatService {
     static let chat_invite_url = URLRequest(url: URL(string: Utils.base_endpoint + "chat-invite/")!)
     
     // List chat rooms for given user.
-    static func listChatRooms(token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatRoom], Error>) -> Void) {
+    static func listChatRooms(token: String, lastUpdatedTime: String?, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<[ChatRoom], Error>) -> Void) {
         var request =  chat_url
+        if lastUpdatedTime != nil {
+            request = URLRequest(url: URL(string: Utils.base_endpoint + "chat/?last_updated_time=" + lastUpdatedTime!)!)
+        }
         
         // Set token in header.
         request.setValue(

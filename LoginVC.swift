@@ -65,6 +65,10 @@ class LoginVC: UIViewController, UITextFieldDelegate  {
         
         // Login.
         AuthService.loginOrSignUp(requestType: .Login, email: self.emailTextField.text!, password: self.passwordTextField.text!, resultQueue: authServiceQueue) { result in
+            DispatchQueue.main.async {
+                self.hideSpinner()
+            }
+            
             switch result {
             case .success(let response):
                 let token = response.token
@@ -85,10 +89,6 @@ class LoginVC: UIViewController, UITextFieldDelegate  {
                 }
             case .failure(let error):
                 print("User login failed with error: \(error.localizedDescription)")
-            }
-            
-            DispatchQueue.main.async {
-                self.hideSpinner()
             }
         }
     }
