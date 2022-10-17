@@ -10,13 +10,14 @@ import UIKit
 class UserAccountVC: UIViewController {
     
     enum ActionType: String {
+        case Feedback
         case Logout
     }
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var emailTitle: UILabel!
     
-    let options: [ActionType] = [.Logout]
+    let options: [ActionType] = [.Feedback, .Logout]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,9 +68,20 @@ extension UserAccountVC: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let actionType = options[indexPath.row]
-        if actionType == ActionType.Logout {
+        switch actionType {
+        case ActionType.Feedback:
+            provideFeedback()
+        case ActionType.Logout:
             logout()
         }
+    }
+    
+    // Provide app feedback.
+    private func provideFeedback() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "FeedbackVC") as! FeedbackVC
+        vc.modalPresentationStyle = .fullScreen
+        self.present(vc, animated: true)
     }
     
     // Logs a user out.
