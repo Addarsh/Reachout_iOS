@@ -63,6 +63,11 @@ class ChatService {
         let room_id: String
     }
     
+    struct ChatRoomExists: Codable {
+        let exists: Bool
+        let room_id: String
+    }
+    
     static let chat_url = URLRequest(url: URL(string: Utils.base_endpoint + "chats/")!)
     static let room_url = URLRequest(url: URL(string: Utils.base_endpoint + "message/")!)
     static let read_url = URLRequest(url: URL(string: Utils.base_endpoint + "read/")!)
@@ -411,6 +416,46 @@ class ChatService {
             
             resultQueue.async {
                 completionHandler(.success(chatRoom))
+            }
+        }
+        
+        task.resume()
+    }
+    
+    // Checks whether a chat room already exists among given users.
+    static func chatRoomAlreadyExists(otherUserId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<ChatRoomExists, Error>) -> Void) {
+        var request = URLRequest(url: URL(string: Utils.base_endpoint + "chat-room-exists/?other_id=" + otherUserId)!)
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        
+        request.httpMethod = Utils.RequestType.GET.rawValue
+        
+        // Create the HTTP request
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let responseData = data, error == nil else {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            var chatRoomExists: ChatRoomExists
+            do {
+                chatRoomExists = try JSONDecoder().decode(ChatRoomExists.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(chatRoomExists))
             }
         }
         

@@ -37,6 +37,8 @@ class PostsVC: UIViewController {
     
     private let headerHeight: CGFloat = 150
     
+    private var authToken: String = ""
+    
     private let postsServiceQueue = DispatchQueue(label: "Posts service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
 
     override func viewDidLoad() {
@@ -63,6 +65,13 @@ class PostsVC: UIViewController {
             return
         }
         self.userId = userId
+        
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        self.authToken = token
     }
     
     @objc func pulledRefreshControl(_ sender:AnyObject) {
@@ -97,15 +106,8 @@ class PostsVC: UIViewController {
         self.noMorePostsToLoad = false
         self.postsLoadingBottom = false
         
-        // Fetch token.
-        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
-            print("Could not read token from keychain")
-            // TODO: Ask user to login again.
-            return
-        }
-        
         // Load posts.
-        PostsService.listPosts(token: token, createdTime: nil, resultQueue: postsServiceQueue) { result in
+        PostsService.listPosts(token: self.authToken, createdTime: nil, resultQueue: postsServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
@@ -229,11 +231,57 @@ extension PostsVC: UINavigationBarDelegate {
 extension PostsVC: PostTableActionDelegate {
     
     func didStartChat(rowIndex: Int) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "StartChatVC") as! StartChatVC
-        vc.postOfCreator = posts[rowIndex]
-        vc.modalPresentationStyle = .fullScreen
-        self.present(vc, animated: true)
+        // Check if chat room already exists.
+        self.showSpinner()
+        
+        // Load posts.
+        let post = posts[rowIndex]
+        ChatService.chatRoomAlreadyExists(otherUserId: post.creator_user, token: self.authToken, resultQueue: postsServiceQueue) { result in
+            DispatchQueue.main.async {
+                self.hideSpinner()
+            }
+            
+            switch result {
+            case .success(let chatRoomExists):
+                if !chatRoomExists.exists {
+                    DispatchQueue.main.async {
+                        // Start a new chat.
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let vc = storyboard.instantiateViewController(withIdentifier: "StartChatVC") as! StartChatVC
+                        vc.postOfCreator = post
+                        vc.modalPresentationStyle = .fullScreen
+                        self.present(vc, animated: true)
+                    }
+                } else {
+                    self.goToExistingChatRoom(roomId: chatRoomExists.room_id)
+                }
+            case .failure(let error):
+                print("list next Posts failed with error: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // Fetch and go to existing chat room.
+    private func goToExistingChatRoom(roomId: String) {
+        ChatService.getChatRoom(roomId: roomId, token: self.authToken, resultQueue: postsServiceQueue) { result in
+            DispatchQueue.main.async {
+                self.hideSpinner()
+            }
+            
+            switch result {
+            case .success(let gotChatRoom):
+                
+                DispatchQueue.main.async {
+                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                    let vc = storyboard.instantiateViewController(withIdentifier: "ChatRoomVC") as! ChatRoomVC
+                    vc.setRoom(chatRoom: gotChatRoom)
+                    vc.modalPresentationStyle = .fullScreen
+                    self.present(vc, animated: true)
+                }
+            case .failure(let error):
+                print("Reload Chat Room failed with error: \(error.localizedDescription)")
+            }
+        }
     }
     
     func didDeletePost(rowIndex: Int) {
