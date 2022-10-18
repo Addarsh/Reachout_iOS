@@ -13,6 +13,7 @@ class KeychainHelper {
     static let TOKEN: String = "token"
     static let USER_ID: String = "user_id"
     static let EMAIL: String = "email"
+    static let USERNAME: String = "username"
     
     // Accounts.
     static let REACHOUT: String = "reachout"
@@ -35,7 +36,6 @@ class KeychainHelper {
         
         if status == errSecDuplicateItem  {
             // Item already saved. Do nothing for now.
-            print("Token already saved")
         }
         else if status != errSecSuccess {
             // Print out the error
@@ -58,7 +58,6 @@ class KeychainHelper {
         
         let resultData = result as? Data
         guard let data = resultData else {
-            print("Token not found")
             return nil
         }
 

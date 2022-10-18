@@ -90,6 +90,7 @@ extension UserAccountVC: UITableViewDataSource, UITableViewDelegate {
         KeychainHelper.delete(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT)
         KeychainHelper.delete(service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT)
         KeychainHelper.delete(service: KeychainHelper.EMAIL, account: KeychainHelper.REACHOUT)
+        KeychainHelper.delete(service: KeychainHelper.USERNAME, account: KeychainHelper.REACHOUT)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "LoginVC") as! LoginVC

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class Utils {
     
@@ -42,6 +43,17 @@ class Utils {
         // Based on Django format: 2022-09-24T11:14:10.420751-07:00
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ"
         return dateFormatter.date(from: isoDate)!
+    }
+    
+    // Create and return UIAlertController with single OK button.
+    static func createOkAlert(title: String, message: String) -> UIAlertController {
+        // create the alert
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+
+        // add an action (button)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        
+        return alert
     }
     
     // Returns token value to set for Authorization field in Header of HTTP request.

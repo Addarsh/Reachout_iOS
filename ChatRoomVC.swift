@@ -152,15 +152,17 @@ class ChatRoomVC: UIViewController {
             }
             
             if self.isInvitedState() {
-                // Show accept/reject optiosn.
-                self.inviteMessageLabel.isHidden = false
-                self.acceptOrRejectStackView.isHidden = false
-                
-                self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
-                self.acceptInvite.layer.borderWidth = 0.5
-                self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
-                self.rejectInvite.layer.borderWidth = 0.5
-                self.inviteMessageLabel.text = self.roomName.text! + " wants to chat"
+                DispatchQueue.main.async {
+                    // Show accept/reject optiosn.
+                    self.inviteMessageLabel.isHidden = false
+                    self.acceptOrRejectStackView.isHidden = false
+                    
+                    self.acceptInvite.layer.borderColor = UIColor.gray.cgColor
+                    self.acceptInvite.layer.borderWidth = 0.5
+                    self.rejectInvite.layer.borderColor = UIColor.gray.cgColor
+                    self.rejectInvite.layer.borderWidth = 0.5
+                    self.inviteMessageLabel.text = self.roomName.text! + " wants to chat"
+                }
             } else {
                 // Mark Chat Room as read for the user now.
                 self.markChatRoomAsRead()
