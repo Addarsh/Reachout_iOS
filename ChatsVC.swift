@@ -115,6 +115,9 @@ class ChatsVC: UIViewController {
                 }
             case .failure(let error):
                 print("list Chats failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to load conversations"), animated: true)
+                }
             }
         }
     }
@@ -214,6 +217,9 @@ extension ChatsVC: UITableViewDataSource, UITableViewDelegate {
                 }
             case .failure(let error):
                 print("list next Chats failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to load conversations"), animated: true)
+                }
             }
         }
     }

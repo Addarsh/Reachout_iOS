@@ -33,6 +33,10 @@ class PostsService {
         let id: String
     }
     
+    struct DeletePostResponse: Codable {
+        let error_message: String
+    }
+    
     static let url = URLRequest(url: URL(string: Utils.base_endpoint + "post/")!)
     
     
@@ -133,7 +137,7 @@ class PostsService {
     }
     
     // Delete a Post.
-    static func deletePost(id: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<Int, Error>) -> Void) {
+    static func deletePost(id: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<DeletePostResponse, Error>) -> Void) {
         var request = url
         
         // Set token in header.
@@ -157,18 +161,28 @@ class PostsService {
         request.httpBody = postBody
         
         
-        // Create the HTTP request
+        // Create the HTTP request.
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
-            if error != nil {
+            guard let responseData = data, error == nil else {
                 resultQueue.async {
                     completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
                 }
                 return
             }
             
+            var deletePostResponse: DeletePostResponse
+            do {
+                deletePostResponse = try JSONDecoder().decode(DeletePostResponse.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
             resultQueue.async {
-                completionHandler(.success(0))
+                completionHandler(.success(deletePostResponse))
             }
         }
         

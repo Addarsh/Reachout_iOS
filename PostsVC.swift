@@ -120,6 +120,9 @@ class PostsVC: UIViewController {
                 }
             case .failure(let error):
                 print("list Posts failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to load Thoughts"), animated: true)
+                }
             }
         }
     }
@@ -217,6 +220,9 @@ extension PostsVC: UITableViewDataSource, UITableViewDelegate {
                 }
             case .failure(let error):
                 print("list next Posts failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to load Thoughts"), animated: true)
+                }
             }
         }
     }
@@ -256,7 +262,10 @@ extension PostsVC: PostTableActionDelegate {
                     self.goToExistingChatRoom(roomId: chatRoomExists.room_id)
                 }
             case .failure(let error):
-                print("list next Posts failed with error: \(error.localizedDescription)")
+                print("failed to fetch chat: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Unknown error. Please try again."), animated: true)
+                }
             }
         }
     }
@@ -280,6 +289,9 @@ extension PostsVC: PostTableActionDelegate {
                 }
             case .failure(let error):
                 print("Reload Chat Room failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Unknown error. Please try again."), animated: true)
+                }
             }
         }
     }
@@ -302,10 +314,21 @@ extension PostsVC: PostTableActionDelegate {
                 self.hideSpinner()
             }
             switch result {
-            case .success(_):
+            case .success(let gotResp):
+                if gotResp.error_message != "" {
+                    // Deletion error.
+                    DispatchQueue.main.async {
+                        self.present(Utils.createOkAlert(title: "Error", message: "Failed to delete thought."), animated: true)
+                    }
+                    return
+                }
+                
                 self.fetchLatestPosts()
             case .failure(let error):
-                print("list Posts failed with error: \(error.localizedDescription)")
+                print("Post deletion failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to delete thought."), animated: true)
+                }
             }
         }
     }
