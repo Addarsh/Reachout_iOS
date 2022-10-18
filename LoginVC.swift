@@ -91,6 +91,9 @@ class LoginVC: UIViewController, UITextFieldDelegate  {
                 }
             case .failure(let error):
                 print("User login failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Login failed"), animated: true)
+                }
             }
         }
     }

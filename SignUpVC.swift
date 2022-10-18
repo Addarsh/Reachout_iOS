@@ -116,6 +116,9 @@ class SignUpVC: UIViewController, UITextFieldDelegate  {
                 }
             case .failure(let error):
                 print("User Sign Up failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Sign Up failed"), animated: true)
+                }
             }
         }
     }
