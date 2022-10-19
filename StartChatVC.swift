@@ -51,6 +51,11 @@ class StartChatVC: UIViewController {
     
     // Send chat invite.
     @IBAction func submit(_ sender: Any) {
+        if messageView.text == messageViewPlaceholder || messageView.text.isEmpty {
+            self.present(Utils.createOkAlert(title: "Error", message: "Conversation invite message cannot be empty"), animated: true)
+            return
+        }
+        
         // Fetch token.
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
             print("Could not read token from keychain")
@@ -67,12 +72,20 @@ class StartChatVC: UIViewController {
             }
             
             switch result {
-            case .success(_):
+            case .success(let gotResp):
+                let error_message = gotResp.error_message
                 DispatchQueue.main.async {
+                    if !error_message.isEmpty {
+                        self.present(Utils.createOkAlert(title: "Error", message: "Failed to start conversation"), animated: true)
+                        return
+                    }
                     self.dismiss(animated: true)
                 }
             case .failure(let error):
                 print("start chat failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to start conversation"), animated: true)
+                }
             }
         }
     }

@@ -141,13 +141,18 @@ class ChatRoomVC: UIViewController {
                 }
             case .failure(let error):
                 print("list Chat messages failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed load messages"), animated: true)
+                }
             }
             
             if scrollToBottom {
                 // Scroll to the bottom of the table view.
                 DispatchQueue.main.async {
-                    // Scroll down to bottom of table view by default.
-                    self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
+                    if self.messagesInRoom.count > 0 {
+                        // Scroll down to bottom of table view by default.
+                        self.tableView.scrollToRow(at: IndexPath(row: self.messagesInRoom.count - 1, section: 0), at: .bottom, animated: true)
+                    }
                 }
             }
             
@@ -192,6 +197,9 @@ class ChatRoomVC: UIViewController {
                 }
             case .failure(let error):
                 print("list Chat messages failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to load messages"), animated: true)
+                }
             }
         }
     }
@@ -229,11 +237,17 @@ class ChatRoomVC: UIViewController {
         ChatService.markChatRoomAsRead(roomId: self.chatRoom.room_id, token: self.authToken, resultQueue: chatServiceQueue) { result in
             
             switch result {
-            case .success(_):
-               // Do nothing.
-                break
+            case .success(let resp):
+                if !resp.error_message.isEmpty {
+                    DispatchQueue.main.async {
+                        self.present(Utils.createOkAlert(title: "Error", message: resp.error_message), animated: true)
+                    }
+                }
             case .failure(let error):
                 print("Mark chat as read failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to read chat"), animated: true)
+                }
             }
         }
     }
@@ -282,8 +296,15 @@ class ChatRoomVC: UIViewController {
             }
             
             switch result {
-            case .success(_):
+            case .success(let resp):
+                let error_message = resp.error_message
+                
                 DispatchQueue.main.async {
+                    if !error_message.isEmpty {
+                        self.present(Utils.createOkAlert(title: "Error", message: error_message), animated: true)
+                        return
+                    }
+                    
                     // Hide the buttons.
                     self.hideAcceptOrRejectView()
                     
@@ -299,6 +320,9 @@ class ChatRoomVC: UIViewController {
                 }
             case .failure(let error):
                 print("accept or reject Chat messages failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed operation"), animated: true)
+                }
             }
         }
     }
@@ -315,6 +339,9 @@ class ChatRoomVC: UIViewController {
                 self.chatRoom = gotChatRoom
             case .failure(let error):
                 print("Reload Chat Room failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to reload chat"), animated: true)
+                }
             }
         }
     }
@@ -350,6 +377,9 @@ class ChatRoomVC: UIViewController {
                 self.listUnreadMessages(lastCreatedTime: self.messagesInRoom.last!.created_time)
             case .failure(let error):
                 print("Reload Chats failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to post chat message"), animated: true)
+                }
             }
         }
         

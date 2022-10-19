@@ -37,6 +37,10 @@ class ChatService {
         let initial_message: String
     }
     
+    struct GenericResponse: Codable {
+        let error_message: String
+    }
+    
     // List messages in chat room.
     struct ListMessagesRequest: Codable {
         let room_id: String
@@ -117,7 +121,7 @@ class ChatService {
     }
     
     // Start a chat with initial message.
-    static func startChat(inviteeId: String, initialMessage: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<Int, Error>) -> Void) {
+    static func startChat(inviteeId: String, initialMessage: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<GenericResponse, Error>) -> Void) {
         var request = chat_url
         
         // Set token in header.
@@ -143,15 +147,25 @@ class ChatService {
         // Create the HTTP request
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
-            if error != nil {
+            guard let responseData = data, error == nil else {
                 resultQueue.async {
                     completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
                 }
                 return
             }
             
+            var startChatResponse: GenericResponse
+            do {
+                startChatResponse = try JSONDecoder().decode(GenericResponse.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
             resultQueue.async {
-                completionHandler(.success(0))
+                completionHandler(.success(startChatResponse))
             }
         }
         
@@ -244,7 +258,7 @@ class ChatService {
     }
     
     // Accept or reject chat invite.
-    static func acceptOrRejectChat(roomId: String, accepted: Bool, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<Int, Error>) -> Void) {
+    static func acceptOrRejectChat(roomId: String, accepted: Bool, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<GenericResponse, Error>) -> Void) {
         var request = chat_invite_url
         
         // Set token in header.
@@ -270,15 +284,25 @@ class ChatService {
         // Create the HTTP request
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
-            if error != nil {
+            guard let responseData = data, error == nil else {
                 resultQueue.async {
                     completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
                 }
                 return
             }
             
+            var genericResponse: GenericResponse
+            do {
+                genericResponse = try JSONDecoder().decode(GenericResponse.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
             resultQueue.async {
-                completionHandler(.success(0))
+                completionHandler(.success(genericResponse))
             }
         }
         
@@ -340,7 +364,7 @@ class ChatService {
     }
     
     // Mark chat room as read.
-    static func markChatRoomAsRead(roomId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<Int, Error>) -> Void) {
+    static func markChatRoomAsRead(roomId: String, token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<GenericResponse, Error>) -> Void) {
         var request = read_url
         
         // Set token in header.
@@ -368,15 +392,25 @@ class ChatService {
         // Create the HTTP request
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
-            if error != nil {
+            guard let responseData = data, error == nil else {
                 resultQueue.async {
                     completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
                 }
                 return
             }
             
+            var genericResponse: GenericResponse
+            do {
+                genericResponse = try JSONDecoder().decode(GenericResponse.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
             resultQueue.async {
-                completionHandler(.success(0))
+                completionHandler(.success(genericResponse))
             }
         }
         

@@ -58,11 +58,12 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func didSubmit(_ sender: Any) {
-        if messageTitle.text!.isEmpty || messageView.text.isEmpty {
+        if messageTitle.text!.isEmpty || messageView.text == messageViewPlaceholder || messageView.text.isEmpty {
             // Title or description cannot be empty
-            // TODO: Show error toast.
+            self.present(Utils.createOkAlert(title: "Error", message: "Title or message cannot be empty"), animated: true)
             return
         }
+        
         let title = messageTitle.text!
         let description = messageView.text.description
         
@@ -84,8 +85,10 @@ class CreatePostVC: UIViewController, UITextFieldDelegate {
                     self.dismiss(animated: true)
                 }
             case .failure(let error):
-                // TODO: Show error toast here.
                 print("Create Post failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to create post"), animated: true)
+                }
             }
         }
     }
