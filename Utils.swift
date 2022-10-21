@@ -16,6 +16,8 @@ class Utils {
     static let CONTENT_TYPE = "Content-Type"
     static let AUTHORIZATION = "Authorization"
     static let TOKEN = "Token"
+    // Saved in keychain when email is verified for user. Same for all users (hence used as a progress marker).
+    static let EMAIL_VERIFIED_STRING = "EmailVerified"
     
     // Whether a request is type GET or POST.
     enum RequestType: String {

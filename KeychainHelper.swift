@@ -14,6 +14,7 @@ class KeychainHelper {
     static let USER_ID: String = "user_id"
     static let EMAIL: String = "email"
     static let USERNAME: String = "username"
+    static let EMAIL_VERIFIED: String = "email_verified"
     
     // Accounts.
     static let REACHOUT: String = "reachout"

@@ -98,19 +98,17 @@ class SignUpVC: UIViewController, UITextFieldDelegate  {
                 let token = response.token
                 let userId = response.user_id
                 let email = response.email
-                let username = response.username
                 
                 // Save token, userId and email to keychain.
                 KeychainHelper.save(sensitiveData: token, service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT)
                 KeychainHelper.save(sensitiveData: userId, service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT)
                 KeychainHelper.save(sensitiveData: email, service: KeychainHelper.EMAIL, account: KeychainHelper.REACHOUT)
-                KeychainHelper.save(sensitiveData: username, service: KeychainHelper.USERNAME, account: KeychainHelper.REACHOUT)
                 
                 DispatchQueue.main.async {
                     // Go to Create Username screen.
                     // TODO: Go to email verification flow and then ask user to update username.
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let vc = storyboard.instantiateViewController(withIdentifier: "CreateUsernameVC")
+                    let vc = storyboard.instantiateViewController(withIdentifier: "VerifyEmailVC")
                     vc.modalPresentationStyle = .fullScreen
                     self.present(vc, animated: true)
                 }

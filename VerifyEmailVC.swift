@@ -1,14 +1,14 @@
 //
-//  CreateUsernameVC.swift
+//  VerifyEmailVC.swift
 //  reachout_ios
 //
-//  Created by Addarsh Chandrasekar on 10/16/22.
+//  Created by Addarsh Chandrasekar on 10/19/22.
 //
 
 import UIKit
 
-class CreateUsernameVC: UIViewController {
-
+class VerifyEmailVC: UIViewController {
+    
     @IBOutlet weak var loadingView: UIView! {
         didSet {
             loadingView.layer.cornerRadius = 6
@@ -16,16 +16,9 @@ class CreateUsernameVC: UIViewController {
         }
     }
     
-    @IBOutlet weak var usernameTextField: UITextField! {
-        didSet {
-            let grayPlaceholderText = NSAttributedString(string: "Username",
-                                                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
-            
-            usernameTextField.attributedPlaceholder = grayPlaceholderText
-        }
-    }
-    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var otpTextField: UITextField!
     
     private let authServiceQueue = DispatchQueue(label: "Auth service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
     
@@ -33,20 +26,19 @@ class CreateUsernameVC: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        usernameTextField.layer.borderWidth = 1
-        usernameTextField.layer.borderColor = UIColor.gray.cgColor
-        usernameTextField.layer.cornerRadius = 5
-        usernameTextField.delegate = self
+        otpTextField.layer.borderWidth = 1
+        otpTextField.layer.borderColor = UIColor.gray.cgColor
+        otpTextField.layer.cornerRadius = 5
+        otpTextField.delegate = self
         
         self.hideKeyboardWhenTappedAround()
     }
     
-    // Create new username.
-    @IBAction func submit(_ sender: Any) {
-        if usernameTextField.text == nil {
+    @IBAction func verifiy(_ sender: Any) {
+        if otpTextField.text == nil {
             return
         }
-        let username = usernameTextField.text!
+        let otp = otpTextField.text!
         
         guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
             print("Could not read token from keychain")
@@ -56,7 +48,7 @@ class CreateUsernameVC: UIViewController {
         
         showSpinner()
         
-        AuthService.createUsername(username: username, token: token, resultQueue: authServiceQueue) { result in
+        AuthService.verifyEmail(otp: otp, token: token, resultQueue: authServiceQueue) { result in
             DispatchQueue.main.async {
                 self.hideSpinner()
             }
@@ -68,24 +60,24 @@ class CreateUsernameVC: UIViewController {
                     DispatchQueue.main.async {
                         // Show error.
                         self.present(Utils.createOkAlert(title: "Error", message: gotResp.error_message), animated: true, completion: nil)
+                        return
                     }
-                    return
                 }
                 
-                // Save username in keychain.
-                KeychainHelper.save(sensitiveData: username, service: KeychainHelper.USERNAME, account: KeychainHelper.REACHOUT)
+                // Save that email is verified in keychain.
+                KeychainHelper.save(sensitiveData: Utils.EMAIL_VERIFIED_STRING, service: KeychainHelper.EMAIL_VERIFIED, account: KeychainHelper.REACHOUT)
                 
                 DispatchQueue.main.async {
-                    // Go to Tabs screen.
+                    // Go to Create Username screen.
                     let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                    let vc = storyboard.instantiateViewController(withIdentifier: "TabsVC")
+                    let vc = storyboard.instantiateViewController(withIdentifier: "CreateUsernameVC")
                     vc.modalPresentationStyle = .fullScreen
                     self.present(vc, animated: true)
                 }
             case .failure(let error):
-                print("create username failed with error: \(error.localizedDescription)")
+                print("verify email failed with error: \(error.localizedDescription)")
                 DispatchQueue.main.async {
-                    self.present(Utils.createOkAlert(title: "Error", message: "Unknown error occured."), animated: true, completion: nil)
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to verify code."), animated: true, completion: nil)
                 }
             }
         }
@@ -104,9 +96,9 @@ class CreateUsernameVC: UIViewController {
     }
 }
 
-extension CreateUsernameVC: UITextFieldDelegate {
+extension VerifyEmailVC: UITextFieldDelegate {
     func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(CreateUsernameVC.dismissKeyboard))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(VerifyEmailVC.dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
