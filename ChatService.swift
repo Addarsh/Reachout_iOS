@@ -70,6 +70,10 @@ class ChatService {
     struct ChatRoomExists: Codable {
         let exists: Bool
         let room_id: String
+        // If an existing invite to other user is already pending.
+        let pending_invite_to_other_user: Bool
+        // If an existing invite to me from other user is already pending.
+        let pending_invite_to_me: Bool
     }
     
     static let chat_url = URLRequest(url: URL(string: Utils.base_endpoint + "chats/")!)

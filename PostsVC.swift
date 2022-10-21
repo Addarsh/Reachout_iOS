@@ -258,7 +258,13 @@ extension PostsVC: PostTableActionDelegate {
                         vc.modalPresentationStyle = .fullScreen
                         self.present(vc, animated: true)
                     }
+                } else if chatRoomExists.pending_invite_to_other_user {
+                    // Ask user to wait for pending invite action.
+                    DispatchQueue.main.async {
+                        self.present(Utils.createOkAlert(title: "Please wait", message: "There is already a pending invite with this user."), animated: true)
+                    }
                 } else {
+                    // Go to existing chat room (it might be pending on me to accept the invite).
                     self.goToExistingChatRoom(roomId: chatRoomExists.room_id)
                 }
             case .failure(let error):
