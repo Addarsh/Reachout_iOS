@@ -38,6 +38,11 @@ class Utils {
         case REJECTED
     }
     
+    enum DeleteAction: String {
+        case Yes
+        case Cancel
+    }
+    
     // Fetch date from ISO Date string.
     static func getDate(isoDate: String) -> Date {
         let dateFormatter = DateFormatter()
@@ -55,6 +60,15 @@ class Utils {
         // add an action (button)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         
+        return alert
+    }
+    
+    static func createDeleteAlert(_ handle: @escaping (UIAlertAction) -> Void) -> UIAlertController {
+        let alert = UIAlertController(title: "Warning", message: "All your posts and messages will be deleted.", preferredStyle: UIAlertController.Style.alert)
+        
+        for i in [DeleteAction.Cancel, DeleteAction.Yes] {
+            alert.addAction(UIAlertAction(title: i.rawValue, style: .default, handler: handle))
+        }
         return alert
     }
     

@@ -202,4 +202,44 @@ class AuthService {
         
         task.resume()
     }
+    
+    // Verify that user account is deleted.
+    static func deleteAccount(token: String, resultQueue: DispatchQueue = .main, completionHandler: @escaping (Result<GenericResponse, Error>) -> Void) {
+        let url = URL(string: Utils.base_endpoint + "delete-account/")!
+        var request = URLRequest(url: url)
+        
+        // Set token in header.
+        request.setValue(
+            Utils.getTokenHeaderValue(token: token),
+            forHTTPHeaderField: Utils.AUTHORIZATION
+        )
+        request.httpMethod = Utils.RequestType.GET.rawValue
+        
+        // Create the HTTP request.
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { (data, response, error) in
+            guard let responseData = data, error == nil else {
+                resultQueue.async {
+                    completionHandler(.failure(error ?? Utils.NetworkRequestError.unknown(data, response)))
+                }
+                return
+            }
+            
+            var genericResponse: GenericResponse
+            do {
+                genericResponse = try JSONDecoder().decode(GenericResponse.self, from: responseData)
+            } catch {
+                resultQueue.async {
+                    completionHandler(.failure(error))
+                }
+                return
+            }
+            
+            resultQueue.async {
+                completionHandler(.success(genericResponse))
+            }
+        }
+        
+        task.resume()
+    }
 }

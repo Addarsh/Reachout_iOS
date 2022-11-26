@@ -12,12 +12,15 @@ class UserAccountVC: UIViewController {
     enum ActionType: String {
         case Feedback
         case Logout
+        case DeleteAccount
     }
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var emailTitle: UILabel!
     
-    let options: [ActionType] = [.Feedback, .Logout]
+    let options: [ActionType] = [.Feedback, .Logout, .DeleteAccount]
+    
+    private let authServiceQueue = DispatchQueue(label: "Auth service queue", qos: .default, attributes: [], autoreleaseFrequency: .inherit, target: nil)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +76,8 @@ extension UserAccountVC: UITableViewDataSource, UITableViewDelegate {
             provideFeedback()
         case ActionType.Logout:
             logout()
+        case ActionType.DeleteAccount:
+            self.present(Utils.createDeleteAlert(handleDeleteAction), animated: true)
         }
     }
     
@@ -98,4 +103,46 @@ extension UserAccountVC: UITableViewDataSource, UITableViewDelegate {
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
+    
+    func handleDeleteAction(action: UIAlertAction) {
+        guard let title = action.title else {
+            return
+        }
+        if title == Utils.DeleteAction.Yes.rawValue {
+            deleteAccount()
+        }
+    }
+    
+    // Delete a user's account and associated data.
+    func deleteAccount() {
+        // Fetch token.
+        guard let token = KeychainHelper.read(service: KeychainHelper.TOKEN, account: KeychainHelper.REACHOUT) else {
+            print("Could not read token from keychain")
+            // TODO: Ask user to login again.
+            return
+        }
+        
+        AuthService.deleteAccount(token: token, resultQueue: authServiceQueue) { result in
+            switch result {
+            case .success(let response):
+                if response.error_message != "" {
+                    DispatchQueue.main.async {
+                        self.present(Utils.createOkAlert(title: "Error", message: response.error_message), animated: true)
+                    }
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    // Logout of app.
+                    self.logout()
+                }
+            case .failure(let error):
+                print("User Account deletion failed with error: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.present(Utils.createOkAlert(title: "Error", message: "Failed to delete account"), animated: true)
+                }
+            }
+        }
+    }
+    
 }

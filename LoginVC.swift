@@ -81,6 +81,7 @@ class LoginVC: UIViewController, UITextFieldDelegate  {
                 KeychainHelper.save(sensitiveData: userId, service: KeychainHelper.USER_ID, account: KeychainHelper.REACHOUT)
                 KeychainHelper.save(sensitiveData: email, service: KeychainHelper.EMAIL, account: KeychainHelper.REACHOUT)
                 KeychainHelper.save(sensitiveData: username, service: KeychainHelper.USERNAME, account: KeychainHelper.REACHOUT)
+                KeychainHelper.save(sensitiveData: Utils.EMAIL_VERIFIED_STRING, service: KeychainHelper.EMAIL_VERIFIED, account: KeychainHelper.REACHOUT)
                 
                 DispatchQueue.main.async {
                     // Go to Posts screen.
